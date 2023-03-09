@@ -1,1 +1,43 @@
-{}
+AddData:
+    add_deps: true
+    lines_to_read: 100
+MLModel:
+    distance_nb:
+        _type: distanceNb_dataclass
+        value:
+            add_species: true
+            covariance_type: ard_se
+            cutoff: 6.0
+            delta: 0.1
+            n_sparse: 50
+            order: 2
+            sparse_method: CUR_POINTS
+            theta_uniform: 1.0
+    gap:
+        _type: GapParameter_dataclass
+        value:
+            default_sigma: '{0.0001 0.01 0.01 0.01}'
+            e0_method: average
+            sparse_jitter: 1.0e-10
+    soap:
+        _type: soap_dataclass
+        value:
+            add_species: true
+            covariance_type: dot_product
+            cutoff: 6.0
+            cutoff_transition_width: 0.5
+            delta: 1.0
+            l_max: 7
+            n_max: 7
+            n_sparse: 50
+            sigma: 0.5
+            sparse_method: CUR_POINTS
+            zeta: 4.0
+    use_energy: true
+    use_forces: true
+    use_stresses: false
+test_data:
+    n_configurations: 10
+train_data:
+    n_configurations: 3
+    seed: 1234

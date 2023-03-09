@@ -1,43 +1,98 @@
 AddData:
     add_deps: true
-    lines_to_read: 100
-MLModel:
-    distance_nb:
-        _type: distanceNb_dataclass
-        value:
-            add_species: true
-            covariance_type: ard_se
-            cutoff: 6.0
-            delta: 0.1
-            n_sparse: 50
-            order: 2
-            sparse_method: CUR_POINTS
-            theta_uniform: 1.0
-    gap:
-        _type: GapParameter_dataclass
-        value:
-            default_sigma: '{0.0001 0.01 0.01 0.01}'
-            e0_method: average
-            sparse_jitter: 1.0e-10
-    soap:
-        _type: soap_dataclass
-        value:
-            add_species: true
-            covariance_type: dot_product
-            cutoff: 6.0
-            cutoff_transition_width: 0.5
-            delta: 1.0
-            l_max: 7
-            n_max: 7
-            n_sparse: 50
-            sigma: 0.5
-            sparse_method: CUR_POINTS
-            zeta: 4.0
+    lines_to_read: null
+ModelEnsembleAnalysis:
+    bins: 100
+model_1:
+    amsgrad: true
+    batch_size: 10
+    ema: true
+    ema_decay: 0.99
+    hidden_irreps: 16x0e + 16x1o
+    max_num_epochs: 50
+    num_cutoff_basis: 5
+    num_interactions: 2
+    num_radial_basis: 8
+    r_max: 5.0
+    seed: 1
+    start_swa: 1200
+    swa: true
+    use_energy: true
+    use_forces: true
+    use_stresses: false
+model_2:
+    amsgrad: true
+    batch_size: 10
+    ema: true
+    ema_decay: 0.99
+    hidden_irreps: 16x0e + 16x1o
+    max_num_epochs: 50
+    num_cutoff_basis: 5
+    num_interactions: 2
+    num_radial_basis: 8
+    r_max: 5.0
+    seed: 2
+    start_swa: 1200
+    swa: true
+    use_energy: true
+    use_forces: true
+    use_stresses: false
+model_3:
+    amsgrad: true
+    batch_size: 10
+    ema: true
+    ema_decay: 0.99
+    hidden_irreps: 16x0e + 16x1o
+    max_num_epochs: 50
+    num_cutoff_basis: 5
+    num_interactions: 2
+    num_radial_basis: 8
+    r_max: 5.0
+    seed: 3
+    start_swa: 1200
+    swa: true
+    use_energy: true
+    use_forces: true
+    use_stresses: false
+model_4:
+    amsgrad: true
+    batch_size: 10
+    ema: true
+    ema_decay: 0.99
+    hidden_irreps: 16x0e + 16x1o
+    max_num_epochs: 50
+    num_cutoff_basis: 5
+    num_interactions: 2
+    num_radial_basis: 8
+    r_max: 5.0
+    seed: 4
+    start_swa: 1200
+    swa: true
+    use_energy: true
+    use_forces: true
+    use_stresses: false
+model_5:
+    amsgrad: true
+    batch_size: 10
+    ema: true
+    ema_decay: 0.99
+    hidden_irreps: 16x0e + 16x1o
+    max_num_epochs: 50
+    num_cutoff_basis: 5
+    num_interactions: 2
+    num_radial_basis: 8
+    r_max: 5.0
+    seed: 5
+    start_swa: 1200
+    swa: true
     use_energy: true
     use_forces: true
     use_stresses: false
 test_data:
-    n_configurations: 10
+    n_configurations: 500
 train_data:
-    n_configurations: 3
+    n_configurations: 100
+    seed: 1234
+validate_data:
+    n_configurations: 10
     seed: 1234

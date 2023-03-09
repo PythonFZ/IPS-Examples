@@ -58,14 +58,51 @@
             }
         }
     },
-    "MLModel": {
-        "gap_input_script": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/gap.input"
+    "validate_data": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "excluded_atoms",
+                "item": null
+            }
         },
-        "model_directory": {
+        "exclude_configurations": null
+    },
+    "model_1": {
+        "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
+        },
+        "test_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "validate_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "test_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/test-data.extxyz"
         },
         "train_data": {
             "_type": "znflow.Connection",
@@ -86,7 +123,7 @@
         },
         "train_data_file": {
             "_type": "pathlib.Path",
-            "value": "$nwd$/train_atoms.extxyz"
+            "value": "$nwd$/train-data.extxyz"
         }
     },
     "PredictWithModel": {
@@ -113,9 +150,9 @@
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.models.gap",
-                        "cls": "GAP",
-                        "name": "MLModel",
+                        "module": "ipsuite.models.mace_model",
+                        "cls": "MACE",
+                        "name": "model_1",
                         "origin": null,
                         "rev": null
                     }
@@ -158,6 +195,351 @@
         "stress_df_file": {
             "_type": "pathlib.Path",
             "value": "nodes/AnalysePrediction/stress_df.csv"
+        }
+    },
+    "model_2": {
+        "model_dir": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/model"
+        },
+        "test_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "validate_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "test_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/test-data.extxyz"
+        },
+        "train_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "train_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/train-data.extxyz"
+        }
+    },
+    "model_3": {
+        "model_dir": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/model"
+        },
+        "test_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "validate_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "test_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/test-data.extxyz"
+        },
+        "train_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "train_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/train-data.extxyz"
+        }
+    },
+    "model_4": {
+        "model_dir": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/model"
+        },
+        "test_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "validate_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "test_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/test-data.extxyz"
+        },
+        "train_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "train_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/train-data.extxyz"
+        }
+    },
+    "model_5": {
+        "model_dir": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/model"
+        },
+        "test_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "validate_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "test_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/test-data.extxyz"
+        },
+        "train_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "train_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/train-data.extxyz"
+        }
+    },
+    "ModelEnsembleAnalysis": {
+        "atoms": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.uniform_energetic",
+                        "cls": "UniformEnergeticSelection",
+                        "name": "test_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "histogram": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/histogram.png"
+        },
+        "models": [
+            {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.models.mace_model",
+                            "cls": "MACE",
+                            "name": "model_1",
+                            "origin": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": null,
+                    "item": null
+                }
+            },
+            {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.models.mace_model",
+                            "cls": "MACE",
+                            "name": "model_2",
+                            "origin": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": null,
+                    "item": null
+                }
+            },
+            {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.models.mace_model",
+                            "cls": "MACE",
+                            "name": "model_3",
+                            "origin": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": null,
+                    "item": null
+                }
+            },
+            {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.models.mace_model",
+                            "cls": "MACE",
+                            "name": "model_4",
+                            "origin": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": null,
+                    "item": null
+                }
+            },
+            {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.models.mace_model",
+                            "cls": "MACE",
+                            "name": "model_5",
+                            "origin": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": null,
+                    "item": null
+                }
+            }
+        ],
+        "normal_plot_path": {
+            "_type": "pathlib.Path",
+            "value": "nodes/ModelEnsembleAnalysis/normal_plot.png"
+        },
+        "sorted_plot_path": {
+            "_type": "pathlib.Path",
+            "value": "nodes/ModelEnsembleAnalysis/sorted_plot.png"
+        }
+    },
+    "combined_analyse": {
+        "energy_df_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/energy_df.csv"
+        },
+        "forces_df_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/forces_df.csv"
+        },
+        "plots_dir": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/plots"
+        },
+        "prediction": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.analysis.ensemble",
+                        "cls": "ModelEnsembleAnalysis",
+                        "name": "ModelEnsembleAnalysis",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": null,
+                "item": null
+            }
+        },
+        "stress_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/combined_analyse/stress_df.csv"
         }
     }
 }

@@ -10,7 +10,7 @@ stages:
     AnalysePrediction:
         cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
         deps:
-        - nodes/PredictWithModel/predictions.db
+        - nodes/PredictWithModel/atoms.db
         metrics:
         - nodes/AnalysePrediction/energy.json
         - nodes/AnalysePrediction/forces.json
@@ -40,7 +40,7 @@ stages:
         - nodes/MLModel/train_atoms.extxyz
         - nodes/test_data/selected_configurations.json
         outs:
-        - nodes/PredictWithModel/predictions.db
+        - nodes/PredictWithModel/atoms.db
     test_data:
         cmd: zntrack run ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection
             --name test_data

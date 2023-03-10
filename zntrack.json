@@ -1,1 +1,214 @@
-{}
+{
+    "AddData": {
+        "file": "KCl1650K.extxyz"
+    },
+    "test_data": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.data_loading.add_data_ase",
+                        "cls": "AddData",
+                        "name": "AddData",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "exclude_configurations": null
+    },
+    "train_data": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.data_loading.add_data_ase",
+                        "cls": "AddData",
+                        "name": "AddData",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "exclude_configurations": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.uniform_energetic",
+                        "cls": "UniformEnergeticSelection",
+                        "name": "test_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "exclude_configurations",
+                "item": null
+            }
+        }
+    },
+    "MLModel": {
+        "gap_input_script": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/gap.input"
+        },
+        "model_directory": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/model"
+        },
+        "train_data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "train_data_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/train_atoms.extxyz"
+        },
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        }
+    },
+    "PredictWithModel": {
+        "atoms": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.uniform_energetic",
+                        "cls": "UniformEnergeticSelection",
+                        "name": "test_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "model": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.models.gap",
+                        "cls": "GAP",
+                        "name": "MLModel",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": null,
+                "item": null
+            }
+        },
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.uniform_energetic",
+                        "cls": "UniformEnergeticSelection",
+                        "name": "test_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        }
+    },
+    "AnalysePrediction": {
+        "energy_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AnalysePrediction/energy_df.csv"
+        },
+        "forces_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AnalysePrediction/forces_df.csv"
+        },
+        "plots_dir": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AnalysePrediction/plots"
+        },
+        "prediction": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.analysis.model",
+                        "cls": "PredictWithModel",
+                        "name": "PredictWithModel",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": null,
+                "item": null
+            }
+        },
+        "stress_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AnalysePrediction/stress_df.csv"
+        },
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.analysis.model",
+                        "cls": "PredictWithModel",
+                        "name": "PredictWithModel",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": null,
+                "item": null
+            }
+        }
+    }
+}

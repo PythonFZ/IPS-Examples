@@ -120,28 +120,28 @@ stages:
       md5: 3a7126b406f4f8b7355bc7caa60da5f9
       size: 6849
     outs:
-    - path: nodes/PredictWithModel/predictions.db
-      md5: 05caf0a8aba41a1dc5e7bb81a1450b5a
-      size: 3284992
+    - path: nodes/PredictWithModel/atoms.db
+      md5: ddeb2ba2377751b03862f85507d4fdf6
+      size: 3276800
   AnalysePrediction:
     cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
     deps:
-    - path: nodes/PredictWithModel/predictions.db
-      md5: 05caf0a8aba41a1dc5e7bb81a1450b5a
-      size: 3284992
+    - path: nodes/PredictWithModel/atoms.db
+      md5: ddeb2ba2377751b03862f85507d4fdf6
+      size: 3276800
     outs:
     - path: nodes/AnalysePrediction/energy.json
-      md5: b988021f00e6eaf1c15df7dfa3f82f3b
-      size: 164
+      md5: 7e95290f2a55ff9bf5d295de529f2e72
+      size: 162
     - path: nodes/AnalysePrediction/energy_df.csv
-      md5: 3e41073b20b32ef6e63621291505e56d
-      size: 21075
+      md5: 6493a91a3e6fd7e0f1c9271022429416
+      size: 21089
     - path: nodes/AnalysePrediction/forces.json
-      md5: 8414648a282e72ae1162bb005968f060
-      size: 169
+      md5: 815f953c4764fc2db865eda595282e4b
+      size: 168
     - path: nodes/AnalysePrediction/forces_df.csv
-      md5: 3aee192534f1bff0dae0a400be760a6f
-      size: 7213099
+      md5: 1a11b36545da99037c34adac176e24c7
+      size: 7213151
     - path: nodes/AnalysePrediction/plots
       md5: 7656089ff91851d840d513efbfb0c429.dir
       size: 179807
@@ -478,5 +478,143 @@ stages:
       md5: 99914b932bd37a50b983c5e7c90ae93b
       size: 2
     - path: nodes/combined_analyse/stress_df.csv
+      md5: a227d42afbcc590b4e949075cde4a5b6
+      size: 3
+  ensemble_model:
+    cmd: zntrack run ipsuite.models.ensemble.EnsembleModel --name ensemble_model
+    deps:
+    - path: nodes/model_1/model
+      md5: 28833bad6cc2aaf95f4112b460c2b24e.dir
+      size: 22448645
+      nfiles: 5
+    - path: nodes/model_1/test-data.extxyz
+      md5: 85207744be35b64d4de894f4afc41873
+      size: 106363
+    - path: nodes/model_1/train-data.extxyz
+      md5: bc88bd18fdb9f221b85326972580993b
+      size: 1063613
+    - path: nodes/model_2/model
+      md5: bc8479e4963b12b6d3ff8e9bc2b4e5e4.dir
+      size: 22448684
+      nfiles: 5
+    - path: nodes/model_2/test-data.extxyz
+      md5: 85207744be35b64d4de894f4afc41873
+      size: 106363
+    - path: nodes/model_2/train-data.extxyz
+      md5: bc88bd18fdb9f221b85326972580993b
+      size: 1063613
+    - path: nodes/model_3/model
+      md5: f6bc2880966dca2c3306747fef876131.dir
+      size: 22448731
+      nfiles: 5
+    - path: nodes/model_3/test-data.extxyz
+      md5: 85207744be35b64d4de894f4afc41873
+      size: 106363
+    - path: nodes/model_3/train-data.extxyz
+      md5: bc88bd18fdb9f221b85326972580993b
+      size: 1063613
+    - path: nodes/model_4/model
+      md5: 1fbc76194957705b040f5d3cb0e182ee.dir
+      size: 22448723
+      nfiles: 5
+    - path: nodes/model_4/test-data.extxyz
+      md5: 85207744be35b64d4de894f4afc41873
+      size: 106363
+    - path: nodes/model_4/train-data.extxyz
+      md5: bc88bd18fdb9f221b85326972580993b
+      size: 1063613
+    - path: nodes/model_5/model
+      md5: 55c74546c566f9b9ff6bdcb56204f693.dir
+      size: 22448722
+      nfiles: 5
+    - path: nodes/model_5/test-data.extxyz
+      md5: 85207744be35b64d4de894f4afc41873
+      size: 106363
+    - path: nodes/model_5/train-data.extxyz
+      md5: bc88bd18fdb9f221b85326972580993b
+      size: 1063613
+    outs:
+    - path: nodes/ensemble_model/hash.json
+      md5: 48c7a79619afa6856b03a9c2ce25910d
+      size: 38
+  esnemble_prediction:
+    cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name esnemble_prediction
+    deps:
+    - path: nodes/test_data/selected_configurations.json
+      md5: 3a7126b406f4f8b7355bc7caa60da5f9
+      size: 6849
+    outs:
+    - path: nodes/esnemble_prediction/atoms.db
+      md5: b53f746259e0fd90ff08bb1377773e44
+      size: 3289088
+  ensemble_analyse:
+    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name ensemble_analyse
+    deps:
+    - path: nodes/esnemble_prediction/atoms.db
+      md5: b53f746259e0fd90ff08bb1377773e44
+      size: 3289088
+    outs:
+    - path: nodes/ensemble_analyse/energy.json
+      md5: ae1d75288c48666afe0b6dc3f1e56092
+      size: 164
+    - path: nodes/ensemble_analyse/energy_df.csv
+      md5: 3222bb794ae70e018c8eba12c90a1372
+      size: 21105
+    - path: nodes/ensemble_analyse/forces.json
+      md5: e58eecf3544e1e156ebc59abdad18b25
+      size: 168
+    - path: nodes/ensemble_analyse/forces_df.csv
+      md5: 019b65f8af025b5df26d4896dce888f7
+      size: 7213116
+    - path: nodes/ensemble_analyse/plots
+      md5: cd99a501177613c56ce0b2786c193614.dir
+      size: 168762
+      nfiles: 2
+    - path: nodes/ensemble_analyse/stress.json
+      md5: 99914b932bd37a50b983c5e7c90ae93b
+      size: 2
+    - path: nodes/ensemble_analyse/stress_df.csv
+      md5: a227d42afbcc590b4e949075cde4a5b6
+      size: 3
+  ensemble_prediction:
+    cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name ensemble_prediction
+    deps:
+    - path: nodes/ensemble_model/hash.json
+      md5: 48c7a79619afa6856b03a9c2ce25910d
+      size: 38
+    - path: nodes/test_data/selected_configurations.json
+      md5: 3a7126b406f4f8b7355bc7caa60da5f9
+      size: 6849
+    outs:
+    - path: nodes/ensemble_prediction/atoms.db
+      md5: 611d28e160c3459d69ce30dd31a22477
+      size: 3289088
+  ensemble_analysis:
+    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name ensemble_analysis
+    deps:
+    - path: nodes/ensemble_prediction/atoms.db
+      md5: 611d28e160c3459d69ce30dd31a22477
+      size: 3289088
+    outs:
+    - path: nodes/ensemble_analysis/energy.json
+      md5: 243aeec0a5983fec98e9817a62a0ef84
+      size: 165
+    - path: nodes/ensemble_analysis/energy_df.csv
+      md5: d9582e5f18de5fe9351453694046d1df
+      size: 21092
+    - path: nodes/ensemble_analysis/forces.json
+      md5: e58eecf3544e1e156ebc59abdad18b25
+      size: 168
+    - path: nodes/ensemble_analysis/forces_df.csv
+      md5: 40179d9cb4e81e0ada85fd7a09f48204
+      size: 7213175
+    - path: nodes/ensemble_analysis/plots
+      md5: cd99a501177613c56ce0b2786c193614.dir
+      size: 168762
+      nfiles: 2
+    - path: nodes/ensemble_analysis/stress.json
+      md5: 99914b932bd37a50b983c5e7c90ae93b
+      size: 2
+    - path: nodes/ensemble_analysis/stress_df.csv
       md5: a227d42afbcc590b4e949075cde4a5b6
       size: 3

@@ -1,7 +1,7 @@
 /stress.json
-/energy.json
 /forces.json
-/stress_df.csv
+/energy.json
+/energy_df.csv
 /forces_df.csv
 /plots
-/energy_df.csv
+/stress_df.csv

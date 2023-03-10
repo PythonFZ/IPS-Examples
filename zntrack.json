@@ -79,6 +79,23 @@
         "exclude_configurations": null
     },
     "model_1": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -104,30 +121,13 @@
             "_type": "pathlib.Path",
             "value": "$nwd$/test-data.extxyz"
         },
-        "train_data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.configuration_selection.random",
-                        "cls": "RandomSelection",
-                        "name": "train_data",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
-        },
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train-data.extxyz"
         }
     },
     "PredictWithModel": {
-        "atoms": {
+        "data": {
             "_type": "znflow.Connection",
             "value": {
                 "instance": {
@@ -163,19 +163,7 @@
         }
     },
     "AnalysePrediction": {
-        "energy_df_file": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/energy_df.csv"
-        },
-        "forces_df_file": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/forces_df.csv"
-        },
-        "plots_dir": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/plots"
-        },
-        "prediction": {
+        "data": {
             "_type": "znflow.Connection",
             "value": {
                 "instance": {
@@ -192,12 +180,41 @@
                 "item": null
             }
         },
+        "energy_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AnalysePrediction/energy_df.csv"
+        },
+        "forces_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AnalysePrediction/forces_df.csv"
+        },
+        "plots_dir": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AnalysePrediction/plots"
+        },
         "stress_df_file": {
             "_type": "pathlib.Path",
             "value": "nodes/AnalysePrediction/stress_df.csv"
         }
     },
     "model_2": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -222,23 +239,6 @@
         "test_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/test-data.extxyz"
-        },
-        "train_data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.configuration_selection.random",
-                        "cls": "RandomSelection",
-                        "name": "train_data",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
         },
         "train_data_file": {
             "_type": "pathlib.Path",
@@ -246,6 +246,23 @@
         }
     },
     "model_3": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -270,23 +287,6 @@
         "test_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/test-data.extxyz"
-        },
-        "train_data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.configuration_selection.random",
-                        "cls": "RandomSelection",
-                        "name": "train_data",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
         },
         "train_data_file": {
             "_type": "pathlib.Path",
@@ -294,6 +294,23 @@
         }
     },
     "model_4": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -318,23 +335,6 @@
         "test_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/test-data.extxyz"
-        },
-        "train_data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.configuration_selection.random",
-                        "cls": "RandomSelection",
-                        "name": "train_data",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
         },
         "train_data_file": {
             "_type": "pathlib.Path",
@@ -342,6 +342,23 @@
         }
     },
     "model_5": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "train_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -367,50 +384,12 @@
             "_type": "pathlib.Path",
             "value": "$nwd$/test-data.extxyz"
         },
-        "train_data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.configuration_selection.random",
-                        "cls": "RandomSelection",
-                        "name": "train_data",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
-        },
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train-data.extxyz"
         }
     },
-    "ModelEnsembleAnalysis": {
-        "atoms": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.configuration_selection.uniform_energetic",
-                        "cls": "UniformEnergeticSelection",
-                        "name": "test_data",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
-        },
-        "histogram": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/histogram.png"
-        },
+    "ensemble_model": {
         "models": [
             {
                 "_type": "znflow.Connection",
@@ -497,38 +476,54 @@
                     "item": null
                 }
             }
-        ],
-        "normal_plot_path": {
-            "_type": "pathlib.Path",
-            "value": "nodes/ModelEnsembleAnalysis/normal_plot.png"
-        },
-        "sorted_plot_path": {
-            "_type": "pathlib.Path",
-            "value": "nodes/ModelEnsembleAnalysis/sorted_plot.png"
-        }
+        ]
     },
-    "combined_analyse": {
-        "energy_df_file": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/energy_df.csv"
-        },
-        "forces_df_file": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/forces_df.csv"
-        },
-        "plots_dir": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/plots"
-        },
-        "prediction": {
+    "ensemble_prediction": {
+        "data": {
             "_type": "znflow.Connection",
             "value": {
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.analysis.ensemble",
-                        "cls": "ModelEnsembleAnalysis",
-                        "name": "ModelEnsembleAnalysis",
+                        "module": "ipsuite.configuration_selection.uniform_energetic",
+                        "cls": "UniformEnergeticSelection",
+                        "name": "test_data",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "model": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.models.ensemble",
+                        "cls": "EnsembleModel",
+                        "name": "ensemble_model",
+                        "origin": null,
+                        "rev": null
+                    }
+                },
+                "attribute": null,
+                "item": null
+            }
+        }
+    },
+    "ensemble_analysis": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.analysis.model",
+                        "cls": "PredictWithModel",
+                        "name": "ensemble_prediction",
                         "origin": null,
                         "rev": null
                     }
@@ -537,9 +532,21 @@
                 "item": null
             }
         },
+        "energy_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/ensemble_analysis/energy_df.csv"
+        },
+        "forces_df_file": {
+            "_type": "pathlib.Path",
+            "value": "nodes/ensemble_analysis/forces_df.csv"
+        },
+        "plots_dir": {
+            "_type": "pathlib.Path",
+            "value": "nodes/ensemble_analysis/plots"
+        },
         "stress_df_file": {
             "_type": "pathlib.Path",
-            "value": "nodes/combined_analyse/stress_df.csv"
+            "value": "nodes/ensemble_analysis/stress_df.csv"
         }
     }
 }

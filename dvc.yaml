@@ -10,7 +10,7 @@ stages:
   AnalysePrediction:
     cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
     deps:
-    - nodes/PredictWithModel/predictions.db
+    - nodes/PredictWithModel/atoms.db
     metrics:
     - nodes/AnalysePrediction/energy.json
     - nodes/AnalysePrediction/forces.json
@@ -28,7 +28,7 @@ stages:
     - nodes/model_1/train-data.extxyz
     - nodes/test_data/selected_configurations.json
     outs:
-    - nodes/PredictWithModel/predictions.db
+    - nodes/PredictWithModel/atoms.db
   model_1:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_1
     deps:
@@ -122,8 +122,8 @@ stages:
     - nodes/validate_data/selected_configurations.json
     params:
     - validate_data
-  ModelEnsembleAnalysis:
-    cmd: zntrack run ipsuite.analysis.ensemble.ModelEnsembleAnalysis --name ModelEnsembleAnalysis
+  ensemble_model:
+    cmd: zntrack run ipsuite.models.ensemble.EnsembleModel --name ensemble_model
     deps:
     - nodes/model_1/model
     - nodes/model_1/test-data.extxyz
@@ -140,29 +140,25 @@ stages:
     - nodes/model_5/model
     - nodes/model_5/test-data.extxyz
     - nodes/model_5/train-data.extxyz
-    - nodes/test_data/selected_configurations.json
-    params:
-    - ModelEnsembleAnalysis
     outs:
-    - nodes/ModelEnsembleAnalysis/histogram.png
-    - nodes/ModelEnsembleAnalysis/normal_plot.png
-    - nodes/ModelEnsembleAnalysis/prediction_list.json
-    - nodes/ModelEnsembleAnalysis/predictions.json
-    - nodes/ModelEnsembleAnalysis/sorted_plot.png
-  combined_analyse:
-    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name combined_analyse
+    - nodes/ensemble_model/hash.json
+  ensemble_prediction:
+    cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name ensemble_prediction
     deps:
-    - nodes/ModelEnsembleAnalysis/histogram.png
-    - nodes/ModelEnsembleAnalysis/normal_plot.png
-    - nodes/ModelEnsembleAnalysis/prediction_list.json
-    - nodes/ModelEnsembleAnalysis/predictions.json
-    - nodes/ModelEnsembleAnalysis/sorted_plot.png
+    - nodes/ensemble_model/hash.json
+    - nodes/test_data/selected_configurations.json
     outs:
-    - nodes/combined_analyse/energy_df.csv
-    - nodes/combined_analyse/forces_df.csv
-    - nodes/combined_analyse/plots
-    - nodes/combined_analyse/stress_df.csv
+    - nodes/ensemble_prediction/atoms.db
+  ensemble_analysis:
+    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name ensemble_analysis
+    deps:
+    - nodes/ensemble_prediction/atoms.db
+    outs:
+    - nodes/ensemble_analysis/energy_df.csv
+    - nodes/ensemble_analysis/forces_df.csv
+    - nodes/ensemble_analysis/plots
+    - nodes/ensemble_analysis/stress_df.csv
     metrics:
-    - nodes/combined_analyse/energy.json
-    - nodes/combined_analyse/forces.json
-    - nodes/combined_analyse/stress.json
+    - nodes/ensemble_analysis/energy.json
+    - nodes/ensemble_analysis/forces.json
+    - nodes/ensemble_analysis/stress.json

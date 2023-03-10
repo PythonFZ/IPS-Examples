@@ -1,8 +1,6 @@
 AddData:
     add_deps: true
     lines_to_read: null
-ModelEnsembleAnalysis:
-    bins: 100
 model_1:
     amsgrad: true
     batch_size: 10

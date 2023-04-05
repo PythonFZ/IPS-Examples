@@ -3,23 +3,49 @@ stages:
     cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
     deps:
     - KCl1650K.extxyz
-    outs:
-    - nodes/AddData/atoms.db
     params:
     - AddData
-  AnalysePrediction:
-    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
-    deps:
-    - nodes/PredictWithModel/atoms.db
-    metrics:
-    - nodes/AnalysePrediction/energy.json
-    - nodes/AnalysePrediction/forces.json
-    - nodes/AnalysePrediction/stress.json
     outs:
-    - nodes/AnalysePrediction/energy_df.csv
-    - nodes/AnalysePrediction/forces_df.csv
-    - nodes/AnalysePrediction/plots
-    - nodes/AnalysePrediction/stress_df.csv
+    - nodes/AddData/atoms.h5
+  test_data:
+    cmd: zntrack run ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection
+      --name test_data
+    deps:
+    - nodes/AddData/atoms.h5
+    params:
+    - test_data
+    outs:
+    - nodes/test_data/selected_configurations.json
+  train_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      train_data
+    deps:
+    - nodes/AddData/atoms.h5
+    - nodes/test_data/selected_configurations.json
+    params:
+    - train_data
+    outs:
+    - nodes/train_data/selected_configurations.json
+  validate_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      validate_data
+    deps:
+    - nodes/train_data/selected_configurations.json
+    params:
+    - validate_data
+    outs:
+    - nodes/validate_data/selected_configurations.json
+  model_1:
+    cmd: zntrack run ipsuite.models.mace_model.MACE --name model_1
+    deps:
+    - nodes/train_data/selected_configurations.json
+    - nodes/validate_data/selected_configurations.json
+    params:
+    - model_1
+    outs:
+    - nodes/model_1/model
+    - nodes/model_1/test-data.extxyz
+    - nodes/model_1/train-data.extxyz
   PredictWithModel:
     cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name PredictWithModel
     deps:
@@ -28,100 +54,67 @@ stages:
     - nodes/model_1/train-data.extxyz
     - nodes/test_data/selected_configurations.json
     outs:
-    - nodes/PredictWithModel/atoms.db
-  model_1:
-    cmd: zntrack run ipsuite.models.mace_model.MACE --name model_1
+    - nodes/PredictWithModel/atoms.h5
+  AnalysePrediction:
+    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
     deps:
-    - nodes/train_data/selected_configurations.json
-    - nodes/validate_data/selected_configurations.json
-    meta:
-      device: cuda
+    - nodes/PredictWithModel/atoms.h5
     outs:
-    - nodes/model_1/model
-    - nodes/model_1/test-data.extxyz
-    - nodes/model_1/train-data.extxyz
-    params:
-    - model_1
+    - nodes/AnalysePrediction/energy_df.csv
+    - nodes/AnalysePrediction/forces_df.csv
+    - nodes/AnalysePrediction/plots
+    - nodes/AnalysePrediction/stress_df.csv
+    metrics:
+    - nodes/AnalysePrediction/energy.json:
+        cache: false
+    - nodes/AnalysePrediction/forces.json:
+        cache: false
+    - nodes/AnalysePrediction/stress.json:
+        cache: false
   model_2:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_2
     deps:
     - nodes/train_data/selected_configurations.json
     - nodes/validate_data/selected_configurations.json
-    meta:
-      device: cuda
+    params:
+    - model_2
     outs:
     - nodes/model_2/model
     - nodes/model_2/test-data.extxyz
     - nodes/model_2/train-data.extxyz
-    params:
-    - model_2
   model_3:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_3
     deps:
     - nodes/train_data/selected_configurations.json
     - nodes/validate_data/selected_configurations.json
-    meta:
-      device: cuda
+    params:
+    - model_3
     outs:
     - nodes/model_3/model
     - nodes/model_3/test-data.extxyz
     - nodes/model_3/train-data.extxyz
-    params:
-    - model_3
   model_4:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_4
     deps:
     - nodes/train_data/selected_configurations.json
     - nodes/validate_data/selected_configurations.json
-    meta:
-      device: cuda
+    params:
+    - model_4
     outs:
     - nodes/model_4/model
     - nodes/model_4/test-data.extxyz
     - nodes/model_4/train-data.extxyz
-    params:
-    - model_4
   model_5:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_5
     deps:
     - nodes/train_data/selected_configurations.json
     - nodes/validate_data/selected_configurations.json
-    meta:
-      device: cuda
+    params:
+    - model_5
     outs:
     - nodes/model_5/model
     - nodes/model_5/test-data.extxyz
     - nodes/model_5/train-data.extxyz
-    params:
-    - model_5
-  test_data:
-    cmd: zntrack run ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection
-      --name test_data
-    deps:
-    - nodes/AddData/atoms.db
-    outs:
-    - nodes/test_data/selected_configurations.json
-    params:
-    - test_data
-  train_data:
-    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
-      train_data
-    deps:
-    - nodes/AddData/atoms.db
-    - nodes/test_data/selected_configurations.json
-    outs:
-    - nodes/train_data/selected_configurations.json
-    params:
-    - train_data
-  validate_data:
-    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
-      validate_data
-    deps:
-    - nodes/train_data/selected_configurations.json
-    outs:
-    - nodes/validate_data/selected_configurations.json
-    params:
-    - validate_data
   ensemble_model:
     cmd: zntrack run ipsuite.models.ensemble.EnsembleModel --name ensemble_model
     deps:
@@ -141,24 +134,27 @@ stages:
     - nodes/model_5/test-data.extxyz
     - nodes/model_5/train-data.extxyz
     outs:
-    - nodes/ensemble_model/hash.json
+    - nodes/ensemble_model/uuid.json
   ensemble_prediction:
     cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name ensemble_prediction
     deps:
-    - nodes/ensemble_model/hash.json
+    - nodes/ensemble_model/uuid.json
     - nodes/test_data/selected_configurations.json
     outs:
-    - nodes/ensemble_prediction/atoms.db
+    - nodes/ensemble_prediction/atoms.h5
   ensemble_analysis:
     cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name ensemble_analysis
     deps:
-    - nodes/ensemble_prediction/atoms.db
+    - nodes/ensemble_prediction/atoms.h5
     outs:
     - nodes/ensemble_analysis/energy_df.csv
     - nodes/ensemble_analysis/forces_df.csv
     - nodes/ensemble_analysis/plots
     - nodes/ensemble_analysis/stress_df.csv
     metrics:
-    - nodes/ensemble_analysis/energy.json
-    - nodes/ensemble_analysis/forces.json
-    - nodes/ensemble_analysis/stress.json
+    - nodes/ensemble_analysis/energy.json:
+        cache: false
+    - nodes/ensemble_analysis/forces.json:
+        cache: false
+    - nodes/ensemble_analysis/stress.json:
+        cache: false

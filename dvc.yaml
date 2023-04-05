@@ -1,1 +1,90 @@
-{}
+stages:
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - etoh_meoh_dimer.traj
+    params:
+    - AddData
+    outs:
+    - nodes/AddData/atoms.h5
+  test_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      test_data
+    deps:
+    - nodes/AddData/atoms.h5
+    params:
+    - test_data
+    outs:
+    - nodes/test_data/selected_configurations.json
+  train_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      train_data
+    deps:
+    - nodes/AddData/atoms.h5
+    - nodes/test_data/selected_configurations.json
+    params:
+    - train_data
+    outs:
+    - nodes/train_data/selected_configurations.json
+  MLModel:
+    cmd: zntrack run ipsuite.models.mace_model.MACE --name MLModel
+    deps:
+    - nodes/train_data/selected_configurations.json
+    - nodes/val_data/selected_configurations.json
+    params:
+    - MLModel
+    outs:
+    - nodes/MLModel/model
+    - nodes/MLModel/test-data.extxyz
+    - nodes/MLModel/train-data.extxyz
+  PredictWithModel:
+    cmd: zntrack run ipsuite.analysis.model.predict.PredictWithModel --name PredictWithModel
+    deps:
+    - nodes/MLModel/model
+    - nodes/MLModel/test-data.extxyz
+    - nodes/MLModel/train-data.extxyz
+    - nodes/test_data/selected_configurations.json
+    outs:
+    - nodes/PredictWithModel/atoms.h5
+  AnalysePrediction:
+    cmd: zntrack run ipsuite.analysis.model.predict.AnalysePrediction --name AnalysePrediction
+    deps:
+    - nodes/PredictWithModel/atoms.h5
+    outs:
+    - nodes/AnalysePrediction/energy_df.csv
+    - nodes/AnalysePrediction/forces_df.csv
+    - nodes/AnalysePrediction/plots
+    - nodes/AnalysePrediction/stress_df.csv
+    metrics:
+    - nodes/AnalysePrediction/energy.json:
+        cache: false
+    - nodes/AnalysePrediction/forces.json:
+        cache: false
+    - nodes/AnalysePrediction/stress.json:
+        cache: false
+  InterIntraForces:
+    cmd: zntrack run ipsuite.analysis.model.predict.InterIntraForces --name InterIntraForces
+    deps:
+    - nodes/PredictWithModel/atoms.h5
+    outs:
+    - nodes/InterIntraForces/rot_force.png
+    - nodes/InterIntraForces/trans_force.png
+    - nodes/InterIntraForces/vib_force.png
+    metrics:
+    - nodes/InterIntraForces/rot_forces.json:
+        cache: false
+    - nodes/InterIntraForces/trans_forces.json:
+        cache: false
+    - nodes/InterIntraForces/vib_forces.json:
+        cache: false
+  val_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      val_data
+    deps:
+    - nodes/AddData/atoms.h5
+    - nodes/test_data/selected_configurations.json
+    - nodes/train_data/selected_configurations.json
+    params:
+    - val_data
+    outs:
+    - nodes/val_data/selected_configurations.json

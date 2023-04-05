@@ -1,0 +1,186 @@
+schema: '2.0'
+stages:
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - path: etoh_meoh_dimer.traj
+      md5: 1add08e90d482c58a3f770bf55dae205
+      size: 13457362
+    params:
+      params.yaml:
+        AddData:
+          lines_to_read:
+    outs:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+  test_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      test_data
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+    params:
+      params.yaml:
+        test_data:
+          n_configurations: 1000
+          seed: 1234
+    outs:
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+  train_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      train_data
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+    params:
+      params.yaml:
+        train_data:
+          n_configurations: 500
+          seed: 1234
+    outs:
+    - path: nodes/train_data/selected_configurations.json
+      md5: 1d918f2db52a5666078f94b98b1ec7e0
+      size: 6967
+  MLModel:
+    cmd: zntrack run ipsuite.models.mace_model.MACE --name MLModel
+    deps:
+    - path: nodes/train_data/selected_configurations.json
+      md5: 1d918f2db52a5666078f94b98b1ec7e0
+      size: 6967
+    - path: nodes/val_data/selected_configurations.json
+      md5: b31ff3978dcf93c86a865da89cfd17dc
+      size: 1407
+    params:
+      params.yaml:
+        MLModel:
+          amsgrad: true
+          batch_size: 10
+          ema: true
+          ema_decay: 0.99
+          hidden_irreps: 16x0e + 16x1o
+          max_num_epochs: 250
+          num_cutoff_basis: 5
+          num_interactions: 2
+          num_radial_basis: 8
+          r_max: 5.0
+          seed: 42
+          start_swa: 1200
+          swa: true
+          use_energy: true
+          use_forces: true
+          use_stresses: false
+    outs:
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+  PredictWithModel:
+    cmd: zntrack run ipsuite.analysis.model.predict.PredictWithModel --name PredictWithModel
+    deps:
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+    outs:
+    - path: nodes/PredictWithModel/atoms.h5
+      md5: 0a481f948a4415dec3f2f74dcc23d8fa
+      size: 1380688
+  AnalysePrediction:
+    cmd: zntrack run ipsuite.analysis.model.predict.AnalysePrediction --name AnalysePrediction
+    deps:
+    - path: nodes/PredictWithModel/atoms.h5
+      md5: 0a481f948a4415dec3f2f74dcc23d8fa
+      size: 1380688
+    outs:
+    - path: nodes/AnalysePrediction/energy.json
+      md5: b0d65604f80930c65cf1883d0be2788e
+      size: 168
+    - path: nodes/AnalysePrediction/energy_df.csv
+      md5: ae6af77129cfb25b63a3a6d993a9c9f5
+      size: 42325
+    - path: nodes/AnalysePrediction/forces.json
+      md5: bdf60d03200b8cbd74c9909359da78bd
+      size: 171
+    - path: nodes/AnalysePrediction/forces_df.csv
+      md5: 614803ca8141964a106095ac333f3534
+      size: 2438153
+    - path: nodes/AnalysePrediction/plots
+      md5: 6f6848cb1afce8928d9c151d238c4f39.dir
+      size: 159737
+      nfiles: 2
+    - path: nodes/AnalysePrediction/stress.json
+      md5: 99914b932bd37a50b983c5e7c90ae93b
+      size: 2
+    - path: nodes/AnalysePrediction/stress_df.csv
+      md5: a227d42afbcc590b4e949075cde4a5b6
+      size: 3
+  InterIntraForces:
+    cmd: zntrack run ipsuite.analysis.model.predict.InterIntraForces --name InterIntraForces
+    deps:
+    - path: nodes/PredictWithModel/atoms.h5
+      md5: 0a481f948a4415dec3f2f74dcc23d8fa
+      size: 1380688
+    outs:
+    - path: nodes/InterIntraForces/rot_force.png
+      md5: 9e45925672e14109b445749e842a4301
+      size: 87892
+    - path: nodes/InterIntraForces/rot_forces.json
+      md5: 9fdc71adcca9bd55d6ba5b4853fdd41d
+      size: 171
+    - path: nodes/InterIntraForces/trans_force.png
+      md5: 4e3655d42ab19b662851aa520d6581d5
+      size: 81749
+    - path: nodes/InterIntraForces/trans_forces.json
+      md5: 714a730006538621100c213d1deb9112
+      size: 171
+    - path: nodes/InterIntraForces/vib_force.png
+      md5: 3211cd357a7ffa0df8e1df06fe129782
+      size: 61969
+    - path: nodes/InterIntraForces/vib_forces.json
+      md5: 1231f2feef43b1ca9ee83695c54c2ef3
+      size: 170
+  val_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      val_data
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+    - path: nodes/train_data/selected_configurations.json
+      md5: 1d918f2db52a5666078f94b98b1ec7e0
+      size: 6967
+    params:
+      params.yaml:
+        val_data:
+          n_configurations: 100
+          seed: 1234
+    outs:
+    - path: nodes/val_data/selected_configurations.json
+      md5: b31ff3978dcf93c86a865da89cfd17dc
+      size: 1407

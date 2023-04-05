@@ -1,1 +1,28 @@
-{}
+AddData:
+    lines_to_read: null
+MLModel:
+    amsgrad: true
+    batch_size: 10
+    ema: true
+    ema_decay: 0.99
+    hidden_irreps: 16x0e + 16x1o
+    max_num_epochs: 250
+    num_cutoff_basis: 5
+    num_interactions: 2
+    num_radial_basis: 8
+    r_max: 5.0
+    seed: 42
+    start_swa: 1200
+    swa: true
+    use_energy: true
+    use_forces: true
+    use_stresses: false
+test_data:
+    n_configurations: 1000
+    seed: 1234
+train_data:
+    n_configurations: 500
+    seed: 1234
+val_data:
+    n_configurations: 100
+    seed: 1234

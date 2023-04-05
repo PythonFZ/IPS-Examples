@@ -4,40 +4,45 @@
     },
     "test_data": {
         "data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.data_loading.add_data_ase",
-                        "cls": "AddData",
-                        "name": "AddData",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
+            "AddData": {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.data_loading.add_data_ase",
+                            "cls": "AddData",
+                            "name": "AddData",
+                            "remote": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": "atoms",
+                    "item": null
+                }
             }
         },
-        "exclude_configurations": null
+        "exclude_configurations": null,
+        "data_file": null
     },
     "train_data": {
         "data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.data_loading.add_data_ase",
-                        "cls": "AddData",
-                        "name": "AddData",
-                        "origin": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
+            "AddData": {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.data_loading.add_data_ase",
+                            "cls": "AddData",
+                            "name": "AddData",
+                            "remote": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": "atoms",
+                    "item": null
+                }
             }
         },
         "exclude_configurations": {
@@ -49,14 +54,15 @@
                         "module": "ipsuite.configuration_selection.uniform_energetic",
                         "cls": "UniformEnergeticSelection",
                         "name": "test_data",
-                        "origin": null,
+                        "remote": null,
                         "rev": null
                     }
                 },
                 "attribute": "exclude_configurations",
                 "item": null
             }
-        }
+        },
+        "data_file": null
     },
     "MLModel": {
         "gap_input_script": {
@@ -97,7 +103,7 @@
                         "module": "ipsuite.configuration_selection.random",
                         "cls": "RandomSelection",
                         "name": "train_data",
-                        "origin": null,
+                        "remote": null,
                         "rev": null
                     }
                 },
@@ -133,7 +139,7 @@
                         "module": "ipsuite.models.gap",
                         "cls": "GAP",
                         "name": "MLModel",
-                        "origin": null,
+                        "remote": null,
                         "rev": null
                     }
                 },
@@ -150,27 +156,28 @@
                         "module": "ipsuite.configuration_selection.uniform_energetic",
                         "cls": "UniformEnergeticSelection",
                         "name": "test_data",
-                        "origin": null,
+                        "remote": null,
                         "rev": null
                     }
                 },
                 "attribute": "atoms",
                 "item": null
             }
-        }
+        },
+        "data_file": null
     },
     "AnalysePrediction": {
         "energy_df_file": {
             "_type": "pathlib.Path",
-            "value": "nodes/AnalysePrediction/energy_df.csv"
+            "value": "$nwd$/energy_df.csv"
         },
         "forces_df_file": {
             "_type": "pathlib.Path",
-            "value": "nodes/AnalysePrediction/forces_df.csv"
+            "value": "$nwd$/forces_df.csv"
         },
         "plots_dir": {
             "_type": "pathlib.Path",
-            "value": "nodes/AnalysePrediction/plots"
+            "value": "$nwd$/plots"
         },
         "prediction": {
             "_type": "znflow.Connection",
@@ -191,7 +198,7 @@
         },
         "stress_df_file": {
             "_type": "pathlib.Path",
-            "value": "nodes/AnalysePrediction/stress_df.csv"
+            "value": "$nwd$/stress_df.csv"
         },
         "data": {
             "_type": "znflow.Connection",
@@ -202,7 +209,7 @@
                         "module": "ipsuite.analysis.model",
                         "cls": "PredictWithModel",
                         "name": "PredictWithModel",
-                        "origin": null,
+                        "remote": null,
                         "rev": null
                     }
                 },

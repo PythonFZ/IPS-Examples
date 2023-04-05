@@ -1,62 +1,65 @@
 stages:
-    AddData:
-        cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
-        deps:
-        - KCl1650K.extxyz
-        outs:
-        - nodes/AddData/atoms.db
-        params:
-        - AddData
-    AnalysePrediction:
-        cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
-        deps:
-        - nodes/PredictWithModel/atoms.db
-        metrics:
-        - nodes/AnalysePrediction/energy.json
-        - nodes/AnalysePrediction/forces.json
-        - nodes/AnalysePrediction/stress.json
-        outs:
-        - nodes/AnalysePrediction/energy_df.csv
-        - nodes/AnalysePrediction/forces_df.csv
-        - nodes/AnalysePrediction/plots
-        - nodes/AnalysePrediction/stress_df.csv
-    MLModel:
-        cmd: zntrack run ipsuite.models.gap.GAP --name MLModel
-        deps:
-        - nodes/train_data/selected_configurations.json
-        meta:
-            openblas_num_threads: null
-        outs:
-        - nodes/MLModel/gap.input
-        - nodes/MLModel/model
-        - nodes/MLModel/train_atoms.extxyz
-        params:
-        - MLModel
-    PredictWithModel:
-        cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name PredictWithModel
-        deps:
-        - nodes/MLModel/gap.input
-        - nodes/MLModel/model
-        - nodes/MLModel/train_atoms.extxyz
-        - nodes/test_data/selected_configurations.json
-        outs:
-        - nodes/PredictWithModel/atoms.db
-    test_data:
-        cmd: zntrack run ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection
-            --name test_data
-        deps:
-        - nodes/AddData/atoms.db
-        outs:
-        - nodes/test_data/selected_configurations.json
-        params:
-        - test_data
-    train_data:
-        cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
-            train_data
-        deps:
-        - nodes/AddData/atoms.db
-        - nodes/test_data/selected_configurations.json
-        outs:
-        - nodes/train_data/selected_configurations.json
-        params:
-        - train_data
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - KCl1650K.extxyz
+    outs:
+    - nodes/AddData/atoms.h5
+    params:
+    - AddData
+  AnalysePrediction:
+    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
+    deps:
+    - nodes/PredictWithModel/atoms.h5
+    metrics:
+    - nodes/AnalysePrediction/energy.json:
+        cache: false
+    - nodes/AnalysePrediction/forces.json:
+        cache: false
+    - nodes/AnalysePrediction/stress.json:
+        cache: false
+    outs:
+    - nodes/AnalysePrediction/energy_df.csv
+    - nodes/AnalysePrediction/forces_df.csv
+    - nodes/AnalysePrediction/plots
+    - nodes/AnalysePrediction/stress_df.csv
+  MLModel:
+    cmd: zntrack run ipsuite.models.gap.GAP --name MLModel
+    deps:
+    - nodes/train_data/selected_configurations.json
+    meta:
+      openblas_num_threads:
+    outs:
+    - nodes/MLModel/gap.input
+    - nodes/MLModel/model
+    - nodes/MLModel/train_atoms.extxyz
+    params:
+    - MLModel
+  PredictWithModel:
+    cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name PredictWithModel
+    deps:
+    - nodes/MLModel/gap.input
+    - nodes/MLModel/model
+    - nodes/MLModel/train_atoms.extxyz
+    - nodes/test_data/selected_configurations.json
+    outs:
+    - nodes/PredictWithModel/atoms.h5
+  test_data:
+    cmd: zntrack run ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection
+      --name test_data
+    deps:
+    - nodes/AddData/atoms.h5
+    outs:
+    - nodes/test_data/selected_configurations.json
+    params:
+    - test_data
+  train_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      train_data
+    deps:
+    - nodes/AddData/atoms.h5
+    - nodes/test_data/selected_configurations.json
+    outs:
+    - nodes/train_data/selected_configurations.json
+    params:
+    - train_data

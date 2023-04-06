@@ -1,1 +1,73 @@
-{}
+ASEGeoOpt:
+    data_id: 0
+    init_kwargs: {}
+    optimizer: FIRE
+    repeat:
+    - 1
+    - 1
+    - 1
+    run_kwargs:
+        fmax: 0.05
+ASEMD:
+    data_id: 0
+    dump_rate: 1000
+    friction: 0.01
+    max_temperature: 10000.0
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 5000
+    temperature: 250
+    time_step: 0.5
+AddData:
+    lines_to_read: null
+BoxScaleAnalysis:
+    data_id: 0
+    num: 100
+    start: 1
+    stop: 2.0
+EtOH:
+    optimizer: UFF
+    seed: 1234
+    smiles: CCO
+MLModel:
+    amsgrad: true
+    batch_size: 10
+    ema: true
+    ema_decay: 0.99
+    hidden_irreps: 16x0e + 16x1o
+    max_num_epochs: 250
+    num_cutoff_basis: 5
+    num_interactions: 2
+    num_radial_basis: 8
+    r_max: 5.0
+    seed: 42
+    start_swa: 1200
+    swa: true
+    use_energy: true
+    use_forces: true
+    use_stresses: false
+MeOH:
+    optimizer: UFF
+    seed: 1234
+    smiles: CO
+Packmol:
+    box:
+    - 12
+    - 12
+    - 12
+    count:
+    - 10
+    - 10
+    tolerance: 2.0
+test_data:
+    n_configurations: 1000
+    seed: 1234
+train_data:
+    n_configurations: 500
+    seed: 1234
+val_data:
+    n_configurations: 100
+    seed: 1234

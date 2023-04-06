@@ -1,0 +1,378 @@
+schema: '2.0'
+stages:
+  EtOH:
+    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
+      --name EtOH
+    params:
+      params.yaml:
+        EtOH:
+          optimizer: UFF
+          seed: 1234
+          smiles: CCO
+    outs:
+    - path: nodes/EtOH/atoms.h5
+      md5: 808938543a3b7080b87b90c152e1fcf3
+      size: 27968
+    - path: nodes/EtOH/molecule.png
+      md5: 4b8f7fa9a0ec1c09a1eaf1b665501f7e
+      size: 4569
+  Packmol:
+    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
+    deps:
+    - path: nodes/EtOH/atoms.h5
+      md5: 808938543a3b7080b87b90c152e1fcf3
+      size: 27968
+    - path: nodes/EtOH/molecule.png
+      md5: 4b8f7fa9a0ec1c09a1eaf1b665501f7e
+      size: 4569
+    - path: nodes/MeOH/atoms.h5
+      md5: 5b1ac390c15e63c4b6e1160f74a3b751
+      size: 27968
+    - path: nodes/MeOH/molecule.png
+      md5: 6b3e38debf634320d4828d98761f30d3
+      size: 2512
+    params:
+      params.yaml:
+        Packmol:
+          box:
+          - 12
+          - 12
+          - 12
+          count:
+          - 10
+          - 10
+          tolerance: 2.0
+    outs:
+    - path: nodes/Packmol
+      md5: 2c90a7d8fd1fc6f7424c4d15420b3347.dir
+      size: 9728
+      nfiles: 4
+  MeOH:
+    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
+      --name MeOH
+    params:
+      params.yaml:
+        MeOH:
+          optimizer: UFF
+          seed: 1234
+          smiles: CO
+    outs:
+    - path: nodes/MeOH/atoms.h5
+      md5: 5b1ac390c15e63c4b6e1160f74a3b751
+      size: 27968
+    - path: nodes/MeOH/molecule.png
+      md5: 6b3e38debf634320d4828d98761f30d3
+      size: 2512
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - path: etoh_meoh_dimer.traj
+      md5: 1add08e90d482c58a3f770bf55dae205
+      size: 13457362
+    params:
+      params.yaml:
+        AddData:
+          lines_to_read:
+    outs:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+  test_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      test_data
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+    params:
+      params.yaml:
+        test_data:
+          n_configurations: 1000
+          seed: 1234
+    outs:
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+  train_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      train_data
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+    params:
+      params.yaml:
+        train_data:
+          n_configurations: 500
+          seed: 1234
+    outs:
+    - path: nodes/train_data/selected_configurations.json
+      md5: 1d918f2db52a5666078f94b98b1ec7e0
+      size: 6967
+  val_data:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      val_data
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 6385a6f9d34f7ba604b782606b2db585
+      size: 8436112
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+    - path: nodes/train_data/selected_configurations.json
+      md5: 1d918f2db52a5666078f94b98b1ec7e0
+      size: 6967
+    params:
+      params.yaml:
+        val_data:
+          n_configurations: 100
+          seed: 1234
+    outs:
+    - path: nodes/val_data/selected_configurations.json
+      md5: b31ff3978dcf93c86a865da89cfd17dc
+      size: 1407
+  MLModel:
+    cmd: zntrack run ipsuite.models.mace_model.MACE --name MLModel
+    deps:
+    - path: nodes/train_data/selected_configurations.json
+      md5: 1d918f2db52a5666078f94b98b1ec7e0
+      size: 6967
+    - path: nodes/val_data/selected_configurations.json
+      md5: b31ff3978dcf93c86a865da89cfd17dc
+      size: 1407
+    params:
+      params.yaml:
+        MLModel:
+          amsgrad: true
+          batch_size: 10
+          ema: true
+          ema_decay: 0.99
+          hidden_irreps: 16x0e + 16x1o
+          max_num_epochs: 250
+          num_cutoff_basis: 5
+          num_interactions: 2
+          num_radial_basis: 8
+          r_max: 5.0
+          seed: 42
+          start_swa: 1200
+          swa: true
+          use_energy: true
+          use_forces: true
+          use_stresses: false
+    outs:
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+  ASEGeoOpt:
+    cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt
+    deps:
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+    - path: nodes/Packmol
+      md5: 2c90a7d8fd1fc6f7424c4d15420b3347.dir
+      size: 9728
+      nfiles: 4
+    params:
+      params.yaml:
+        ASEGeoOpt:
+          data_id: 0
+          init_kwargs: {}
+          optimizer: FIRE
+          repeat:
+          - 1
+          - 1
+          - 1
+          run_kwargs:
+            fmax: 0.05
+    outs:
+    - path: nodes/ASEGeoOpt/atoms.h5
+      md5: c266b6f339617abe3c375ead484ea18a
+      size: 52832
+    - path: nodes/ASEGeoOpt/optim.traj
+      md5: 499f3be542dafe209e9f56b3ab2202dc
+      size: 1622809
+  ASEMD:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD
+    deps:
+    - path: nodes/ASEGeoOpt/atoms.h5
+      md5: c266b6f339617abe3c375ead484ea18a
+      size: 52832
+    - path: nodes/ASEGeoOpt/optim.traj
+      md5: 499f3be542dafe209e9f56b3ab2202dc
+      size: 1622809
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+    params:
+      params.yaml:
+        ASEMD:
+          data_id: 0
+          dump_rate: 1000
+          friction: 0.01
+          max_temperature: 10000.0
+          repeat:
+          - 1
+          - 1
+          - 1
+          sampling_rate: 1
+          steps: 5000
+          temperature: 250
+          time_step: 0.5
+    outs:
+    - path: nodes/ASEMD/flux_data.csv
+      md5: 7b46dc335abf22bc938f5856be7dad0b
+      size: 214900
+    - path: nodes/ASEMD/steps_before_explosion.json
+      md5: 6bb61e3b7bce0931da574d19d1d82c88
+      size: 2
+    - path: nodes/ASEMD/trajectory.h5
+      md5: cbdfa6a33cea0e9e85ee75b27d91bdb0
+      size: 25073944
+  PredictWithModel:
+    cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name PredictWithModel
+    deps:
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+    - path: nodes/test_data/selected_configurations.json
+      md5: 1ed839a77c946b9568e68232ff9691a5
+      size: 13895
+    outs:
+    - path: nodes/PredictWithModel/atoms.h5
+      md5: 410fc4f8d1dd70e1431d0902e9964e99
+      size: 1380688
+  AnalysePrediction:
+    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
+    deps:
+    - path: nodes/PredictWithModel/atoms.h5
+      md5: 410fc4f8d1dd70e1431d0902e9964e99
+      size: 1380688
+    outs:
+    - path: nodes/AnalysePrediction/energy.json
+      md5: f089eef597c0b9d2eae70a55e717ddc4
+      size: 172
+    - path: nodes/AnalysePrediction/energy_df.csv
+      md5: 3d845b2656dd38e829653434fd61c7a5
+      size: 42329
+    - path: nodes/AnalysePrediction/forces.json
+      md5: 634cc423477255c5953bdf1c473173a4
+      size: 172
+    - path: nodes/AnalysePrediction/forces_df.csv
+      md5: f163b709865959eede7c3f90c70504c7
+      size: 2437933
+    - path: nodes/AnalysePrediction/plots
+      md5: 6f6848cb1afce8928d9c151d238c4f39.dir
+      size: 159737
+      nfiles: 2
+    - path: nodes/AnalysePrediction/stress.json
+      md5: 99914b932bd37a50b983c5e7c90ae93b
+      size: 2
+    - path: nodes/AnalysePrediction/stress_df.csv
+      md5: a227d42afbcc590b4e949075cde4a5b6
+      size: 3
+  InterIntraForces:
+    cmd: zntrack run ipsuite.analysis.model.InterIntraForces --name InterIntraForces
+    deps:
+    - path: nodes/PredictWithModel/atoms.h5
+      md5: 410fc4f8d1dd70e1431d0902e9964e99
+      size: 1380688
+    outs:
+    - path: nodes/InterIntraForces/rot_force.png
+      md5: be5c7cbe74cd256562f6fce4dabf7677
+      size: 93396
+    - path: nodes/InterIntraForces/rot_forces.json
+      md5: ad822930b188feb8f232fa35145581b1
+      size: 103
+    - path: nodes/InterIntraForces/trans_force.png
+      md5: fb5396c8c1500eaf961d65ac10aa9fbd
+      size: 87189
+    - path: nodes/InterIntraForces/trans_forces.json
+      md5: 2cb0474406bfb0b0bb52e33ad55320e3
+      size: 102
+    - path: nodes/InterIntraForces/vib_force.png
+      md5: d6f8469eede9c0d42ce8d1af63fb00f0
+      size: 67656
+    - path: nodes/InterIntraForces/vib_forces.json
+      md5: 271eef9fd0c5f20899eca9638a237de5
+      size: 100
+  BoxScaleAnalysis_mapping:
+    cmd: zntrack run ipsuite.geometry.mapping.BarycenterMapping --name BoxScaleAnalysis_mapping
+      --hash-only
+    outs:
+    - path: nodes/BoxScaleAnalysis_mapping/hash
+      md5: 4a1299b9a612dd01834a64345963f44b
+      size: 36
+  BoxScaleAnalysis:
+    cmd: zntrack run ipsuite.analysis.model.BoxScaleAnalysis --name BoxScaleAnalysis
+    deps:
+    - path: nodes/ASEMD/flux_data.csv
+      md5: 7b46dc335abf22bc938f5856be7dad0b
+      size: 214900
+    - path: nodes/ASEMD/steps_before_explosion.json
+      md5: 6bb61e3b7bce0931da574d19d1d82c88
+      size: 2
+    - path: nodes/ASEMD/trajectory.h5
+      md5: cbdfa6a33cea0e9e85ee75b27d91bdb0
+      size: 25073944
+    - path: nodes/BoxScaleAnalysis_mapping/hash
+      md5: 4a1299b9a612dd01834a64345963f44b
+      size: 36
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+    params:
+      params.yaml:
+        BoxScaleAnalysis:
+          data_id: 0
+          num: 100
+          start: 1
+          stop: 2.0
+    outs:
+    - path: nodes/BoxScaleAnalysis/atoms.h5
+      md5: 509d325e7294487a3260cc7d7c371102
+      size: 643168
+    - path: nodes/BoxScaleAnalysis/energies.csv
+      md5: 76c9391cff6eea1d044d95fb7054d7e8
+      size: 4034
+    - path: nodes/BoxScaleAnalysis/energy.png
+      md5: 268a3d675e44161a7cd4abb4d4745b12
+      size: 29860

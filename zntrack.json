@@ -1,55 +1,4 @@
 {
-    "EtOH": {
-        "image": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/molecule.png"
-        }
-    },
-    "Packmol": {
-        "structures": "$nwd$",
-        "data": [
-            {
-                "_type": "znflow.Connection",
-                "value": {
-                    "instance": {
-                        "_type": "zntrack.Node",
-                        "value": {
-                            "module": "ipsuite.configuration_generation.smiles_to_atoms",
-                            "cls": "SmilesToAtoms",
-                            "name": "EtOH",
-                            "remote": null,
-                            "rev": null
-                        }
-                    },
-                    "attribute": "atoms",
-                    "item": null
-                }
-            },
-            {
-                "_type": "znflow.Connection",
-                "value": {
-                    "instance": {
-                        "_type": "zntrack.Node",
-                        "value": {
-                            "module": "ipsuite.configuration_generation.smiles_to_atoms",
-                            "cls": "SmilesToAtoms",
-                            "name": "MeOH",
-                            "remote": null,
-                            "rev": null
-                        }
-                    },
-                    "attribute": "atoms",
-                    "item": null
-                }
-            }
-        ]
-    },
-    "MeOH": {
-        "image": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/molecule.png"
-        }
-    },
     "AddData": {
         "file": "etoh_meoh_dimer.traj"
     },
@@ -222,88 +171,6 @@
             "value": "$nwd$/train-data.extxyz"
         }
     },
-    "ASEMD": {
-        "data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.calculators.ase_geoopt",
-                        "cls": "ASEGeoOpt",
-                        "name": "ASEGeoOpt",
-                        "remote": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
-        },
-        "data_file": null,
-        "model": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.models.mace_model",
-                        "cls": "MACE",
-                        "name": "MLModel",
-                        "remote": null,
-                        "rev": null
-                    }
-                },
-                "attribute": null,
-                "item": null
-            }
-        },
-        "traj_file": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/trajectory.h5"
-        }
-    },
-    "ASEGeoOpt": {
-        "calculator": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.models.mace_model",
-                        "cls": "MACE",
-                        "name": "MLModel",
-                        "remote": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "calc",
-                "item": null
-            }
-        },
-        "data": {
-            "_type": "znflow.Connection",
-            "value": {
-                "instance": {
-                    "_type": "zntrack.Node",
-                    "value": {
-                        "module": "ipsuite.configuration_generation.packmol",
-                        "cls": "Packmol",
-                        "name": "Packmol",
-                        "remote": null,
-                        "rev": null
-                    }
-                },
-                "attribute": "atoms",
-                "item": null
-            }
-        },
-        "data_file": null,
-        "traj": {
-            "_type": "pathlib.Path",
-            "value": "$nwd$/optim.traj"
-        }
-    },
     "PredictWithModel": {
         "data": {
             "_type": "znflow.Connection",
@@ -407,6 +274,139 @@
             "value": "$nwd$/vib_force.png"
         }
     },
+    "EtOH": {
+        "image": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/molecule.png"
+        }
+    },
+    "MeOH": {
+        "image": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/molecule.png"
+        }
+    },
+    "Packmol": {
+        "data": [
+            {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.configuration_generation.smiles_to_atoms",
+                            "cls": "SmilesToAtoms",
+                            "name": "EtOH",
+                            "remote": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": "atoms",
+                    "item": null
+                }
+            },
+            {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.configuration_generation.smiles_to_atoms",
+                            "cls": "SmilesToAtoms",
+                            "name": "MeOH",
+                            "remote": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": "atoms",
+                    "item": null
+                }
+            }
+        ],
+        "structures": "$nwd$"
+    },
+    "ASEGeoOpt": {
+        "calculator": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.models.mace_model",
+                        "cls": "MACE",
+                        "name": "MLModel",
+                        "remote": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "calc",
+                "item": null
+            }
+        },
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_generation.packmol",
+                        "cls": "Packmol",
+                        "name": "Packmol",
+                        "remote": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "data_file": null,
+        "traj": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/optim.traj"
+        }
+    },
+    "ASEMD": {
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.calculators.ase_geoopt",
+                        "cls": "ASEGeoOpt",
+                        "name": "ASEGeoOpt",
+                        "remote": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "data_file": null,
+        "model": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.models.mace_model",
+                        "cls": "MACE",
+                        "name": "MLModel",
+                        "remote": null,
+                        "rev": null
+                    }
+                },
+                "attribute": null,
+                "item": null
+            }
+        },
+        "traj_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/trajectory.h5"
+        }
+    },
     "BoxScaleAnalysis": {
         "data": {
             "_type": "znflow.Connection",
@@ -461,5 +461,95 @@
     "BoxScaleAnalysis_mapping": {
         "data": null,
         "data_file": null
+    },
+    "stability_confs": {
+        "data": {
+            "ASEMD": {
+                "_type": "znflow.Connection",
+                "value": {
+                    "instance": {
+                        "_type": "zntrack.Node",
+                        "value": {
+                            "module": "ipsuite.calculators.ase_md",
+                            "cls": "ASEMD",
+                            "name": "ASEMD",
+                            "remote": null,
+                            "rev": null
+                        }
+                    },
+                    "attribute": "atoms",
+                    "item": null
+                }
+            }
+        },
+        "data_file": null,
+        "exclude_configurations": null
+    },
+    "MDStabilityAnalysis": {
+        "checks": [
+            {
+                "_type": "zntrack.Node",
+                "value": {
+                    "module": "ipsuite.analysis.model",
+                    "cls": "ConnectivityCheck",
+                    "name": "MDStabilityAnalysis_checks_0",
+                    "remote": null,
+                    "rev": null
+                }
+            },
+            {
+                "_type": "zntrack.Node",
+                "value": {
+                    "module": "ipsuite.analysis.model",
+                    "cls": "NaNCheck",
+                    "name": "MDStabilityAnalysis_checks_1",
+                    "remote": null,
+                    "rev": null
+                }
+            }
+        ],
+        "data": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.configuration_selection.random",
+                        "cls": "RandomSelection",
+                        "name": "stability_confs",
+                        "remote": null,
+                        "rev": null
+                    }
+                },
+                "attribute": "atoms",
+                "item": null
+            }
+        },
+        "data_file": null,
+        "model": {
+            "_type": "znflow.Connection",
+            "value": {
+                "instance": {
+                    "_type": "zntrack.Node",
+                    "value": {
+                        "module": "ipsuite.models.mace_model",
+                        "cls": "MACE",
+                        "name": "MLModel",
+                        "remote": null,
+                        "rev": null
+                    }
+                },
+                "attribute": null,
+                "item": null
+            }
+        },
+        "plots_dir": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/plots"
+        },
+        "traj_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/trajectory.h5"
+        }
     }
 }

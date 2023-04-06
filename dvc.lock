@@ -332,7 +332,7 @@ stages:
       --hash-only
     outs:
     - path: nodes/BoxScaleAnalysis_mapping/hash
-      md5: 4a1299b9a612dd01834a64345963f44b
+      md5: b322abcb44eff77aeca9575ce4a1513e
       size: 36
   BoxScaleAnalysis:
     cmd: zntrack run ipsuite.analysis.model.BoxScaleAnalysis --name BoxScaleAnalysis
@@ -347,7 +347,7 @@ stages:
       md5: cbdfa6a33cea0e9e85ee75b27d91bdb0
       size: 25073944
     - path: nodes/BoxScaleAnalysis_mapping/hash
-      md5: 4a1299b9a612dd01834a64345963f44b
+      md5: b322abcb44eff77aeca9575ce4a1513e
       size: 36
     - path: nodes/MLModel/model
       md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
@@ -371,8 +371,93 @@ stages:
       md5: 509d325e7294487a3260cc7d7c371102
       size: 643168
     - path: nodes/BoxScaleAnalysis/energies.csv
-      md5: 76c9391cff6eea1d044d95fb7054d7e8
+      md5: e6472caf3055b3d4f17509bb00d09752
       size: 4034
     - path: nodes/BoxScaleAnalysis/energy.png
       md5: 268a3d675e44161a7cd4abb4d4745b12
       size: 29860
+  MDStabilityAnalysis_checks_0:
+    cmd: zntrack run ipsuite.analysis.model.ConnectivityCheck --name MDStabilityAnalysis_checks_0
+      --hash-only
+    outs:
+    - path: nodes/MDStabilityAnalysis_checks_0/hash
+      md5: e6343ac643d986c6a6caa918f3fb6485
+      size: 36
+  MDStabilityAnalysis_checks_1:
+    cmd: zntrack run ipsuite.analysis.model.NaNCheck --name MDStabilityAnalysis_checks_1
+      --hash-only
+    outs:
+    - path: nodes/MDStabilityAnalysis_checks_1/hash
+      md5: 3677615a3e34e82cbfd7dddbc67d2510
+      size: 36
+  MDStabilityAnalysis_checks_2:
+    cmd: zntrack run ipsuite.analysis.model.NaNCheck --name MDStabilityAnalysis_checks_2
+      --hash-only
+    outs:
+    - path: nodes/MDStabilityAnalysis_checks_2/hash
+      md5: dfc969402d3fd71c0931a2289c72fd7d
+      size: 36
+  MDStabilityAnalysis:
+    cmd: zntrack run ipsuite.analysis.model.MDStabilityAnalysis --name MDStabilityAnalysis
+    deps:
+    - path: nodes/MDStabilityAnalysis_checks_0/hash
+      md5: e6343ac643d986c6a6caa918f3fb6485
+      size: 36
+    - path: nodes/MDStabilityAnalysis_checks_1/hash
+      md5: 3677615a3e34e82cbfd7dddbc67d2510
+      size: 36
+    - path: nodes/MLModel/model
+      md5: b319d98d4f9d8e288256f69bfd6f4cde.dir
+      size: 23673149
+      nfiles: 5
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 567272a8cd685b3a1751bfe0923d0dc2
+      size: 172723
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 31313dd4a6dbdc7cdee0e076c0aa90ed
+      size: 863606
+    - path: nodes/stability_confs/selected_configurations.json
+      md5: 9b1bab00c47d53f019729d8b95f16fdd
+      size: 301
+    params:
+      params.yaml:
+        MDStabilityAnalysis:
+          bins: 10
+          initial_temperature: 200
+          max_steps: 1000
+          save_last_n: 1
+          seed: 0
+          time_step: 0.5
+    outs:
+    - path: nodes/MDStabilityAnalysis/plots
+      md5: 67ab35e5cc59f33eb41d9d59c345a6c7.dir
+      size: 16257
+      nfiles: 1
+    - path: nodes/MDStabilityAnalysis/stable_steps_df.csv
+      md5: f2f55f98f22a700b38030f39f724d2ee
+      size: 124
+    - path: nodes/MDStabilityAnalysis/trajectory.h5
+      md5: c94ae80c08408f1337d7f2154a02f6aa
+      size: 119152
+  stability_confs:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      stability_confs
+    deps:
+    - path: nodes/ASEMD/flux_data.csv
+      md5: 7b46dc335abf22bc938f5856be7dad0b
+      size: 214900
+    - path: nodes/ASEMD/steps_before_explosion.json
+      md5: 6bb61e3b7bce0931da574d19d1d82c88
+      size: 2
+    - path: nodes/ASEMD/trajectory.h5
+      md5: cbdfa6a33cea0e9e85ee75b27d91bdb0
+      size: 25073944
+    params:
+      params.yaml:
+        stability_confs:
+          n_configurations: 20
+          seed: 1234
+    outs:
+    - path: nodes/stability_confs/selected_configurations.json
+      md5: 9b1bab00c47d53f019729d8b95f16fdd
+      size: 301

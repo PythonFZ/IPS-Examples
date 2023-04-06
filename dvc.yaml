@@ -1,31 +1,4 @@
 stages:
-  EtOH:
-    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
-      --name EtOH
-    params:
-    - EtOH
-    outs:
-    - nodes/EtOH/atoms.h5
-    - nodes/EtOH/molecule.png
-  Packmol:
-    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
-    params:
-    - Packmol
-    outs:
-    - nodes/Packmol
-    deps:
-    - nodes/EtOH/atoms.h5
-    - nodes/EtOH/molecule.png
-    - nodes/MeOH/atoms.h5
-    - nodes/MeOH/molecule.png
-  MeOH:
-    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
-      --name MeOH
-    params:
-    - MeOH
-    outs:
-    - nodes/MeOH/atoms.h5
-    - nodes/MeOH/molecule.png
   AddData:
     cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
     deps:
@@ -75,35 +48,6 @@ stages:
     - nodes/MLModel/model
     - nodes/MLModel/test-data.extxyz
     - nodes/MLModel/train-data.extxyz
-  ASEMD:
-    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD
-    deps:
-    - nodes/ASEGeoOpt/atoms.h5
-    - nodes/ASEGeoOpt/optim.traj
-    - nodes/MLModel/model
-    - nodes/MLModel/test-data.extxyz
-    - nodes/MLModel/train-data.extxyz
-    params:
-    - ASEMD
-    outs:
-    - nodes/ASEMD/trajectory.h5
-    metrics:
-    - nodes/ASEMD/steps_before_explosion.json:
-        cache: false
-    plots:
-    - nodes/ASEMD/flux_data.csv
-  ASEGeoOpt:
-    cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt
-    deps:
-    - nodes/MLModel/model
-    - nodes/MLModel/test-data.extxyz
-    - nodes/MLModel/train-data.extxyz
-    - nodes/Packmol
-    params:
-    - ASEGeoOpt
-    outs:
-    - nodes/ASEGeoOpt/atoms.h5
-    - nodes/ASEGeoOpt/optim.traj
   PredictWithModel:
     cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name PredictWithModel
     deps:
@@ -144,6 +88,62 @@ stages:
         cache: false
     - nodes/InterIntraForces/vib_forces.json:
         cache: false
+  EtOH:
+    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
+      --name EtOH
+    params:
+    - EtOH
+    outs:
+    - nodes/EtOH/atoms.h5
+    - nodes/EtOH/molecule.png
+  MeOH:
+    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
+      --name MeOH
+    params:
+    - MeOH
+    outs:
+    - nodes/MeOH/atoms.h5
+    - nodes/MeOH/molecule.png
+  Packmol:
+    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
+    deps:
+    - nodes/EtOH/atoms.h5
+    - nodes/EtOH/molecule.png
+    - nodes/MeOH/atoms.h5
+    - nodes/MeOH/molecule.png
+    params:
+    - Packmol
+    outs:
+    - nodes/Packmol
+  ASEGeoOpt:
+    cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt
+    deps:
+    - nodes/MLModel/model
+    - nodes/MLModel/test-data.extxyz
+    - nodes/MLModel/train-data.extxyz
+    - nodes/Packmol
+    params:
+    - ASEGeoOpt
+    outs:
+    - nodes/ASEGeoOpt/atoms.h5
+    - nodes/ASEGeoOpt/optim.traj
+  ASEMD:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD
+    deps:
+    - nodes/ASEGeoOpt/atoms.h5
+    - nodes/ASEGeoOpt/optim.traj
+    - nodes/MLModel/model
+    - nodes/MLModel/test-data.extxyz
+    - nodes/MLModel/train-data.extxyz
+    params:
+    - ASEMD
+    outs:
+    - nodes/ASEMD/trajectory.h5
+    metrics:
+    - nodes/ASEMD/steps_before_explosion.json:
+        cache: false
+    plots:
+    - nodes/ASEMD/flux_data.csv
   BoxScaleAnalysis:
     cmd: zntrack run ipsuite.analysis.model.BoxScaleAnalysis --name BoxScaleAnalysis
     deps:
@@ -166,3 +166,40 @@ stages:
       --hash-only
     outs:
     - nodes/BoxScaleAnalysis_mapping/hash
+  stability_confs:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      stability_confs
+    deps:
+    - nodes/ASEMD/flux_data.csv
+    - nodes/ASEMD/steps_before_explosion.json
+    - nodes/ASEMD/trajectory.h5
+    params:
+    - stability_confs
+    outs:
+    - nodes/stability_confs/selected_configurations.json
+  MDStabilityAnalysis:
+    cmd: zntrack run ipsuite.analysis.model.MDStabilityAnalysis --name MDStabilityAnalysis
+    deps:
+    - nodes/MDStabilityAnalysis_checks_0/hash
+    - nodes/MDStabilityAnalysis_checks_1/hash
+    - nodes/MLModel/model
+    - nodes/MLModel/test-data.extxyz
+    - nodes/MLModel/train-data.extxyz
+    - nodes/stability_confs/selected_configurations.json
+    params:
+    - MDStabilityAnalysis
+    outs:
+    - nodes/MDStabilityAnalysis/plots
+    - nodes/MDStabilityAnalysis/trajectory.h5
+    plots:
+    - nodes/MDStabilityAnalysis/stable_steps_df.csv
+  MDStabilityAnalysis_checks_0:
+    cmd: zntrack run ipsuite.analysis.model.ConnectivityCheck --name MDStabilityAnalysis_checks_0
+      --hash-only
+    outs:
+    - nodes/MDStabilityAnalysis_checks_0/hash
+  MDStabilityAnalysis_checks_1:
+    cmd: zntrack run ipsuite.analysis.model.NaNCheck --name MDStabilityAnalysis_checks_1
+      --hash-only
+    outs:
+    - nodes/MDStabilityAnalysis_checks_1/hash

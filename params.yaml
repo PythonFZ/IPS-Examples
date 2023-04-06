@@ -32,6 +32,13 @@ EtOH:
     optimizer: UFF
     seed: 1234
     smiles: CCO
+MDStabilityAnalysis:
+    bins: 10
+    initial_temperature: 200
+    max_steps: 1000
+    save_last_n: 1
+    seed: 0
+    time_step: 0.5
 MLModel:
     amsgrad: true
     batch_size: 10
@@ -62,6 +69,9 @@ Packmol:
     - 10
     - 10
     tolerance: 2.0
+stability_confs:
+    n_configurations: 20
+    seed: 1234
 test_data:
     n_configurations: 1000
     seed: 1234

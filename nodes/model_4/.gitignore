@@ -1,3 +1,4 @@
-/model
-/test-data.extxyz
+/training.csv
 /train-data.extxyz
+/test-data.extxyz
+/model

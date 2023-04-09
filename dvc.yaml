@@ -46,30 +46,36 @@ stages:
     - nodes/model_1/model
     - nodes/model_1/test-data.extxyz
     - nodes/model_1/train-data.extxyz
-  PredictWithModel:
-    cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name PredictWithModel
+    plots:
+    - nodes/model_1/training.csv:
+        template: /data/fzills/tools/ipsuite/ipsuite/static_data/y_log.json
+        x: epoch
+        y: loss
+  Prediction:
+    cmd: zntrack run ipsuite.analysis.model.predict.Prediction --name Prediction
     deps:
     - nodes/model_1/model
     - nodes/model_1/test-data.extxyz
     - nodes/model_1/train-data.extxyz
+    - nodes/model_1/training.csv
     - nodes/test_data/selected_configurations.json
     outs:
-    - nodes/PredictWithModel/atoms.h5
-  AnalysePrediction:
-    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name AnalysePrediction
+    - nodes/Prediction/atoms.h5
+  PredictionMetrics:
+    cmd: zntrack run ipsuite.analysis.model.predict.PredictionMetrics --name PredictionMetrics
     deps:
-    - nodes/PredictWithModel/atoms.h5
+    - nodes/Prediction/atoms.h5
     outs:
-    - nodes/AnalysePrediction/energy_df.csv
-    - nodes/AnalysePrediction/forces_df.csv
-    - nodes/AnalysePrediction/plots
-    - nodes/AnalysePrediction/stress_df.csv
+    - nodes/PredictionMetrics/energy_df.csv
+    - nodes/PredictionMetrics/forces_df.csv
+    - nodes/PredictionMetrics/plots
+    - nodes/PredictionMetrics/stress_df.csv
     metrics:
-    - nodes/AnalysePrediction/energy.json:
+    - nodes/PredictionMetrics/energy.json:
         cache: false
-    - nodes/AnalysePrediction/forces.json:
+    - nodes/PredictionMetrics/forces.json:
         cache: false
-    - nodes/AnalysePrediction/stress.json:
+    - nodes/PredictionMetrics/stress.json:
         cache: false
   model_2:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_2
@@ -82,6 +88,11 @@ stages:
     - nodes/model_2/model
     - nodes/model_2/test-data.extxyz
     - nodes/model_2/train-data.extxyz
+    plots:
+    - nodes/model_2/training.csv:
+        template: /data/fzills/tools/ipsuite/ipsuite/static_data/y_log.json
+        x: epoch
+        y: loss
   model_3:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_3
     deps:
@@ -93,6 +104,11 @@ stages:
     - nodes/model_3/model
     - nodes/model_3/test-data.extxyz
     - nodes/model_3/train-data.extxyz
+    plots:
+    - nodes/model_3/training.csv:
+        template: /data/fzills/tools/ipsuite/ipsuite/static_data/y_log.json
+        x: epoch
+        y: loss
   model_4:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_4
     deps:
@@ -104,6 +120,11 @@ stages:
     - nodes/model_4/model
     - nodes/model_4/test-data.extxyz
     - nodes/model_4/train-data.extxyz
+    plots:
+    - nodes/model_4/training.csv:
+        template: /data/fzills/tools/ipsuite/ipsuite/static_data/y_log.json
+        x: epoch
+        y: loss
   model_5:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name model_5
     deps:
@@ -115,35 +136,45 @@ stages:
     - nodes/model_5/model
     - nodes/model_5/test-data.extxyz
     - nodes/model_5/train-data.extxyz
+    plots:
+    - nodes/model_5/training.csv:
+        template: /data/fzills/tools/ipsuite/ipsuite/static_data/y_log.json
+        x: epoch
+        y: loss
   ensemble_model:
     cmd: zntrack run ipsuite.models.ensemble.EnsembleModel --name ensemble_model
     deps:
     - nodes/model_1/model
     - nodes/model_1/test-data.extxyz
     - nodes/model_1/train-data.extxyz
+    - nodes/model_1/training.csv
     - nodes/model_2/model
     - nodes/model_2/test-data.extxyz
     - nodes/model_2/train-data.extxyz
+    - nodes/model_2/training.csv
     - nodes/model_3/model
     - nodes/model_3/test-data.extxyz
     - nodes/model_3/train-data.extxyz
+    - nodes/model_3/training.csv
     - nodes/model_4/model
     - nodes/model_4/test-data.extxyz
     - nodes/model_4/train-data.extxyz
+    - nodes/model_4/training.csv
     - nodes/model_5/model
     - nodes/model_5/test-data.extxyz
     - nodes/model_5/train-data.extxyz
+    - nodes/model_5/training.csv
     outs:
     - nodes/ensemble_model/uuid.json
   ensemble_prediction:
-    cmd: zntrack run ipsuite.analysis.model.PredictWithModel --name ensemble_prediction
+    cmd: zntrack run ipsuite.analysis.model.predict.Prediction --name ensemble_prediction
     deps:
     - nodes/ensemble_model/uuid.json
     - nodes/test_data/selected_configurations.json
     outs:
     - nodes/ensemble_prediction/atoms.h5
   ensemble_analysis:
-    cmd: zntrack run ipsuite.analysis.model.AnalysePrediction --name ensemble_analysis
+    cmd: zntrack run ipsuite.analysis.model.predict.PredictionMetrics --name ensemble_analysis
     deps:
     - nodes/ensemble_prediction/atoms.h5
     outs:

@@ -105,7 +105,7 @@
                 "item": null
             }
         },
-        "device": "cuda",
+        "device": "cpu",
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -134,9 +134,13 @@
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train-data.extxyz"
+        },
+        "training": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/training.csv"
         }
     },
-    "PredictWithModel": {
+    "Prediction": {
         "data": {
             "_type": "znflow.Connection",
             "value": {
@@ -173,16 +177,16 @@
             }
         }
     },
-    "AnalysePrediction": {
+    "PredictionMetrics": {
         "data": {
             "_type": "znflow.Connection",
             "value": {
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.analysis.model",
-                        "cls": "PredictWithModel",
-                        "name": "PredictWithModel",
+                        "module": "ipsuite.analysis.model.predict",
+                        "cls": "Prediction",
+                        "name": "Prediction",
                         "remote": null,
                         "rev": null
                     }
@@ -226,7 +230,7 @@
                 "item": null
             }
         },
-        "device": "cuda",
+        "device": "cpu",
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -255,6 +259,10 @@
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train-data.extxyz"
+        },
+        "training": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/training.csv"
         }
     },
     "model_3": {
@@ -275,7 +283,7 @@
                 "item": null
             }
         },
-        "device": "cuda",
+        "device": "cpu",
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -304,6 +312,10 @@
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train-data.extxyz"
+        },
+        "training": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/training.csv"
         }
     },
     "model_4": {
@@ -324,7 +336,7 @@
                 "item": null
             }
         },
-        "device": "cuda",
+        "device": "cpu",
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -353,6 +365,10 @@
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train-data.extxyz"
+        },
+        "training": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/training.csv"
         }
     },
     "model_5": {
@@ -373,7 +389,7 @@
                 "item": null
             }
         },
-        "device": "cuda",
+        "device": "cpu",
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -402,6 +418,10 @@
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train-data.extxyz"
+        },
+        "training": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/training.csv"
         }
     },
     "ensemble_model": {
@@ -537,8 +557,8 @@
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.analysis.model",
-                        "cls": "PredictWithModel",
+                        "module": "ipsuite.analysis.model.predict",
+                        "cls": "Prediction",
                         "name": "ensemble_prediction",
                         "remote": null,
                         "rev": null

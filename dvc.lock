@@ -1,0 +1,65 @@
+schema: '2.0'
+stages:
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - path: KCl1650K.extxyz
+      md5: 2b9727d4c2a7f1eacab8d6a66b47118b
+      size: 219416447
+    params:
+      params.yaml:
+        AddData:
+          lines_to_read:
+    outs:
+    - path: nodes/AddData/atoms.h5
+      md5: 8f071b60494c1d6514aa4aa196ca8a2c
+      size: 112166856
+  ConfigurationComparison:
+    cmd: zntrack run ipsuite.configuration_comparison.MMKernel.MMKernel --name ConfigurationComparison
+    deps:
+    - path: nodes/ConfigurationSelection/selected_configurations.json
+      md5: be12a8fa6b8006eb20497e6e168d70a0
+      size: 2733
+    params:
+      params.yaml:
+        ConfigurationComparison:
+          soap:
+            _type: soap_parameter_dataclass
+            value:
+              atomic_keys:
+              - K
+              - Cl
+              l_max: 2
+              n_jobs: -1
+              n_max: 5
+              periodic: true
+              r_cut: 4
+              rbf: gto
+              sigma: 1.0
+              weighting:
+    outs:
+    - path: nodes/ConfigurationComparison/result.json
+      md5: 8b8e6428a32c6686e9dd331fc0b11288
+      size: 4466
+    - path: nodes/ConfigurationComparison/similarities.csv
+      md5: f2a41b544a616d9cf451104966280196
+      size: 4200
+  ConfigurationSelection:
+    cmd: zntrack run ipsuite.configuration_selection.index.IndexSelection --name ConfigurationSelection
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 8f071b60494c1d6514aa4aa196ca8a2c
+      size: 112166856
+    params:
+      params.yaml:
+        ConfigurationSelection:
+          indices:
+            _type: slice
+            value:
+              start:
+              step: 100
+              stop:
+    outs:
+    - path: nodes/ConfigurationSelection/selected_configurations.json
+      md5: be12a8fa6b8006eb20497e6e168d70a0
+      size: 2733

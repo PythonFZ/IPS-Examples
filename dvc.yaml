@@ -1,1 +1,26 @@
-{}
+stages:
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - KCl1650K.extxyz
+    params:
+    - AddData
+    outs:
+    - nodes/AddData/atoms.h5
+  ConfigurationSelection:
+    cmd: zntrack run ipsuite.configuration_selection.index.IndexSelection --name ConfigurationSelection
+    deps:
+    - nodes/AddData/atoms.h5
+    params:
+    - ConfigurationSelection
+    outs:
+    - nodes/ConfigurationSelection/selected_configurations.json
+  ConfigurationComparison:
+    cmd: zntrack run ipsuite.configuration_comparison.MMKernel.MMKernel --name ConfigurationComparison
+    deps:
+    - nodes/ConfigurationSelection/selected_configurations.json
+    params:
+    - ConfigurationComparison
+    outs:
+    - nodes/ConfigurationComparison/result.json
+    - nodes/ConfigurationComparison/similarities.csv

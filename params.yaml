@@ -1,1 +1,24 @@
-{}
+AddData:
+    lines_to_read: null
+ConfigurationComparison:
+    soap:
+        _type: soap_parameter_dataclass
+        value:
+            atomic_keys:
+            - K
+            - Cl
+            l_max: 2
+            n_jobs: -1
+            n_max: 5
+            periodic: true
+            r_cut: 4
+            rbf: gto
+            sigma: 1.0
+            weighting: null
+ConfigurationSelection:
+    indices:
+        _type: slice
+        value:
+            start: null
+            step: 100
+            stop: null

@@ -1,1 +1,103 @@
-{}
+ASEGeoOpt:
+    data_id: 0
+    init_kwargs: {}
+    optimizer: BFGS
+    repeat:
+    - 1
+    - 1
+    - 1
+    run_kwargs:
+        fmax: 0.1
+ASEMD:
+    data_id: -1
+    dump_rate: 1
+    friction: 0.01
+    max_temperature: 10000.0
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 250
+    temperature: 300
+    time_step: 1
+ASEMD_1:
+    data_id: -1
+    dump_rate: 1
+    friction: 0.01
+    max_temperature: 10000.0
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 250
+    temperature: 300
+    time_step: 1
+ASEMD_2:
+    data_id: -1
+    dump_rate: 1
+    friction: 0.01
+    max_temperature: 10000.0
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 250
+    temperature: 300
+    time_step: 1
+ASEMD_3:
+    data_id: -1
+    dump_rate: 1
+    friction: 0.01
+    max_temperature: 10000.0
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 250
+    temperature: 300
+    time_step: 1
+ASEMD_4:
+    data_id: -1
+    dump_rate: 1
+    friction: 0.01
+    max_temperature: 10000.0
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 250
+    temperature: 300
+    time_step: 1
+ASEMD_5:
+    data_id: -1
+    dump_rate: 1
+    friction: 0.01
+    max_temperature: 10000.0
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 250
+    temperature: 300
+    time_step: 1
+EnergyHistogram:
+    bins: 100
+ForcesHistogram:
+    bins: null
+Packmol:
+    box: null
+    count:
+    - 10
+    density: 997
+    tolerance: 2.0
+SmilesToAtoms:
+    cell: null
+    optimizer: UFF
+    seed: 1234
+    smiles: O

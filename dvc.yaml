@@ -1,1 +1,217 @@
-{}
+plots:
+- nodes/EnergyHistogram/labels_df.csv: {}
+- nodes/ForcesHistogram/labels_df.csv: {}
+stages:
+  ASEGeoOpt:
+    cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt
+    deps:
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    - nodes/Packmol/atoms.h5
+    - nodes/Packmol/packmol
+    outs:
+    - nodes/ASEGeoOpt/calc_logs
+    - nodes/ASEGeoOpt/optim.traj
+    params:
+    - ASEGeoOpt
+  ASEMD:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD
+    deps:
+    - nodes/ASEGeoOpt/calc_logs
+    - nodes/ASEGeoOpt/optim.traj
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    metrics:
+    - nodes/ASEMD/steps_before_explosion.json:
+        cache: false
+    outs:
+    - nodes/ASEMD/calc_logs
+    - nodes/ASEMD/flux_data.csv
+    - nodes/ASEMD/trajectory.h5
+    params:
+    - ASEMD
+  ASEMD_1:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_1
+    deps:
+    - nodes/ASEMD/calc_logs
+    - nodes/ASEMD/flux_data.csv
+    - nodes/ASEMD/steps_before_explosion.json
+    - nodes/ASEMD/trajectory.h5
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    metrics:
+    - nodes/ASEMD_1/steps_before_explosion.json:
+        cache: false
+    outs:
+    - nodes/ASEMD_1/calc_logs
+    - nodes/ASEMD_1/flux_data.csv
+    - nodes/ASEMD_1/trajectory.h5
+    params:
+    - ASEMD_1
+  ASEMD_2:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_2
+    deps:
+    - nodes/ASEMD_1/calc_logs
+    - nodes/ASEMD_1/flux_data.csv
+    - nodes/ASEMD_1/steps_before_explosion.json
+    - nodes/ASEMD_1/trajectory.h5
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    metrics:
+    - nodes/ASEMD_2/steps_before_explosion.json:
+        cache: false
+    outs:
+    - nodes/ASEMD_2/calc_logs
+    - nodes/ASEMD_2/flux_data.csv
+    - nodes/ASEMD_2/trajectory.h5
+    params:
+    - ASEMD_2
+  ASEMD_3:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_3
+    deps:
+    - nodes/ASEMD_2/calc_logs
+    - nodes/ASEMD_2/flux_data.csv
+    - nodes/ASEMD_2/steps_before_explosion.json
+    - nodes/ASEMD_2/trajectory.h5
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    metrics:
+    - nodes/ASEMD_3/steps_before_explosion.json:
+        cache: false
+    outs:
+    - nodes/ASEMD_3/calc_logs
+    - nodes/ASEMD_3/flux_data.csv
+    - nodes/ASEMD_3/trajectory.h5
+    params:
+    - ASEMD_3
+  ASEMD_4:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_4
+    deps:
+    - nodes/ASEMD_3/calc_logs
+    - nodes/ASEMD_3/flux_data.csv
+    - nodes/ASEMD_3/steps_before_explosion.json
+    - nodes/ASEMD_3/trajectory.h5
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    metrics:
+    - nodes/ASEMD_4/steps_before_explosion.json:
+        cache: false
+    outs:
+    - nodes/ASEMD_4/calc_logs
+    - nodes/ASEMD_4/flux_data.csv
+    - nodes/ASEMD_4/trajectory.h5
+    params:
+    - ASEMD_4
+  ASEMD_5:
+    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_5
+    deps:
+    - nodes/ASEMD_4/calc_logs
+    - nodes/ASEMD_4/flux_data.csv
+    - nodes/ASEMD_4/steps_before_explosion.json
+    - nodes/ASEMD_4/trajectory.h5
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    metrics:
+    - nodes/ASEMD_5/steps_before_explosion.json:
+        cache: false
+    outs:
+    - nodes/ASEMD_5/calc_logs
+    - nodes/ASEMD_5/flux_data.csv
+    - nodes/ASEMD_5/trajectory.h5
+    params:
+    - ASEMD_5
+  CP2KSinglePoint:
+    cmd: zntrack run ipsuite.calculators.cp2k.CP2KSinglePoint --name CP2KSinglePoint
+    deps:
+    - GTH_BASIS_SETS
+    - GTH_POTENTIALS
+    - dftd3.dat
+    - nodes/Packmol/atoms.h5
+    - nodes/Packmol/packmol
+    outs:
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    params:
+    - cp2k.yaml: null
+  EnergyHistogram:
+    cmd: zntrack run ipsuite.analysis.bin_property.EnergyHistogram --name EnergyHistogram
+    deps:
+    - nodes/ASEMD/calc_logs
+    - nodes/ASEMD/flux_data.csv
+    - nodes/ASEMD/steps_before_explosion.json
+    - nodes/ASEMD/trajectory.h5
+    - nodes/ASEMD_1/calc_logs
+    - nodes/ASEMD_1/flux_data.csv
+    - nodes/ASEMD_1/steps_before_explosion.json
+    - nodes/ASEMD_1/trajectory.h5
+    - nodes/ASEMD_2/calc_logs
+    - nodes/ASEMD_2/flux_data.csv
+    - nodes/ASEMD_2/steps_before_explosion.json
+    - nodes/ASEMD_2/trajectory.h5
+    - nodes/ASEMD_3/calc_logs
+    - nodes/ASEMD_3/flux_data.csv
+    - nodes/ASEMD_3/steps_before_explosion.json
+    - nodes/ASEMD_3/trajectory.h5
+    - nodes/ASEMD_4/calc_logs
+    - nodes/ASEMD_4/flux_data.csv
+    - nodes/ASEMD_4/steps_before_explosion.json
+    - nodes/ASEMD_4/trajectory.h5
+    - nodes/ASEMD_5/calc_logs
+    - nodes/ASEMD_5/flux_data.csv
+    - nodes/ASEMD_5/steps_before_explosion.json
+    - nodes/ASEMD_5/trajectory.h5
+    outs:
+    - nodes/EnergyHistogram/labels_df.csv
+    - nodes/EnergyHistogram/plots
+    params:
+    - EnergyHistogram
+  ForcesHistogram:
+    cmd: zntrack run ipsuite.analysis.bin_property.ForcesHistogram --name ForcesHistogram
+    deps:
+    - nodes/ASEMD/calc_logs
+    - nodes/ASEMD/flux_data.csv
+    - nodes/ASEMD/steps_before_explosion.json
+    - nodes/ASEMD/trajectory.h5
+    - nodes/ASEMD_1/calc_logs
+    - nodes/ASEMD_1/flux_data.csv
+    - nodes/ASEMD_1/steps_before_explosion.json
+    - nodes/ASEMD_1/trajectory.h5
+    - nodes/ASEMD_2/calc_logs
+    - nodes/ASEMD_2/flux_data.csv
+    - nodes/ASEMD_2/steps_before_explosion.json
+    - nodes/ASEMD_2/trajectory.h5
+    - nodes/ASEMD_3/calc_logs
+    - nodes/ASEMD_3/flux_data.csv
+    - nodes/ASEMD_3/steps_before_explosion.json
+    - nodes/ASEMD_3/trajectory.h5
+    - nodes/ASEMD_4/calc_logs
+    - nodes/ASEMD_4/flux_data.csv
+    - nodes/ASEMD_4/steps_before_explosion.json
+    - nodes/ASEMD_4/trajectory.h5
+    - nodes/ASEMD_5/calc_logs
+    - nodes/ASEMD_5/flux_data.csv
+    - nodes/ASEMD_5/steps_before_explosion.json
+    - nodes/ASEMD_5/trajectory.h5
+    outs:
+    - nodes/ForcesHistogram/labels_df.csv
+    - nodes/ForcesHistogram/plots
+    params:
+    - ForcesHistogram
+  Packmol:
+    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
+    deps:
+    - nodes/SmilesToAtoms/atoms.h5
+    - nodes/SmilesToAtoms/molecule.png
+    outs:
+    - nodes/Packmol/atoms.h5
+    - nodes/Packmol/packmol
+    params:
+    - Packmol
+  SmilesToAtoms:
+    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
+      --name SmilesToAtoms
+    outs:
+    - nodes/SmilesToAtoms/atoms.h5
+    - nodes/SmilesToAtoms/molecule.png
+    params:
+    - SmilesToAtoms

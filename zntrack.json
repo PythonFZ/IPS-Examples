@@ -41,7 +41,7 @@
             "dftd3.dat"
         ],
         "cp2k_params": "cp2k.yaml",
-        "cp2k_shell": "cp2k_shell.ssmp",
+        "cp2k_shell": "cp2k_shell.psmp",
         "data": {
             "_type": "znflow.Connection",
             "value": {

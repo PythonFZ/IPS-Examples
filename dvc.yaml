@@ -1,35 +1,6 @@
+plots:
+- nodes/ASEMD/metrics_dict.csv: {}
 stages:
-  SmilesToAtoms:
-    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
-      --name SmilesToAtoms
-    params:
-    - SmilesToAtoms
-    outs:
-    - nodes/SmilesToAtoms/atoms.h5
-    - nodes/SmilesToAtoms/molecule.png
-  Packmol:
-    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
-    deps:
-    - nodes/SmilesToAtoms/atoms.h5
-    - nodes/SmilesToAtoms/molecule.png
-    params:
-    - Packmol
-    outs:
-    - nodes/Packmol/atoms.h5
-    - nodes/Packmol/packmol
-  CP2KSinglePoint:
-    cmd: zntrack run ipsuite.calculators.cp2k.CP2KSinglePoint --name CP2KSinglePoint
-    deps:
-    - GTH_BASIS_SETS
-    - GTH_POTENTIALS
-    - dftd3.dat
-    - nodes/Packmol/atoms.h5
-    - nodes/Packmol/packmol
-    params:
-    - cp2k.yaml:
-    outs:
-    - nodes/CP2KSinglePoint/atoms.h5
-    - nodes/CP2KSinglePoint/cp2k
   ASEGeoOpt:
     cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt
     deps:
@@ -37,11 +8,11 @@ stages:
     - nodes/CP2KSinglePoint/cp2k
     - nodes/Packmol/atoms.h5
     - nodes/Packmol/packmol
-    params:
-    - ASEGeoOpt
     outs:
     - nodes/ASEGeoOpt/model_outs
     - nodes/ASEGeoOpt/optim.traj
+    params:
+    - ASEGeoOpt
   ASEMD:
     cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD
     deps:
@@ -50,23 +21,54 @@ stages:
     - nodes/ASEMD_thermostat/hash
     - nodes/CP2KSinglePoint/atoms.h5
     - nodes/CP2KSinglePoint/cp2k
-    params:
-    - ASEMD
-    outs:
-    - nodes/ASEMD/metrics_dict.csv
-    - nodes/ASEMD/model
-    - nodes/ASEMD/trajectory.h5
     metrics:
     - nodes/ASEMD/steps_before_stopping.json:
         cache: false
     - nodes/ASEMD/velocity_cache.json:
         cache: false
+    outs:
+    - nodes/ASEMD/metrics_dict.csv
+    - nodes/ASEMD/model
+    - nodes/ASEMD/trajectory.h5
+    params:
+    - ASEMD
   ASEMD_thermostat:
     cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_thermostat
       --hash-only
+    outs:
+    - nodes/ASEMD_thermostat/hash
     params:
     - ASEMD_thermostat
     - zntrack.json:
       - ASEMD.thermostat
+  CP2KSinglePoint:
+    cmd: zntrack run ipsuite.calculators.cp2k.CP2KSinglePoint --name CP2KSinglePoint
+    deps:
+    - GTH_BASIS_SETS
+    - GTH_POTENTIALS
+    - dftd3.dat
+    - nodes/Packmol/atoms.h5
+    - nodes/Packmol/packmol
     outs:
-    - nodes/ASEMD_thermostat/hash
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    params:
+    - cp2k.yaml: null
+  Packmol:
+    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
+    deps:
+    - nodes/SmilesToAtoms/atoms.h5
+    - nodes/SmilesToAtoms/molecule.png
+    outs:
+    - nodes/Packmol/atoms.h5
+    - nodes/Packmol/packmol
+    params:
+    - Packmol
+  SmilesToAtoms:
+    cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
+      --name SmilesToAtoms
+    outs:
+    - nodes/SmilesToAtoms/atoms.h5
+    - nodes/SmilesToAtoms/molecule.png
+    params:
+    - SmilesToAtoms

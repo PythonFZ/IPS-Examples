@@ -19,10 +19,39 @@ ASEMD:
     - 1
     sampling_rate: 1
     steps: 250
+ASEMD_1:
+    data_id: -1
+    dump_rate: 1
+    init_temperature: null
+    init_velocity: null
+    repeat:
+    - 1
+    - 1
+    - 1
+    sampling_rate: 1
+    steps: 5000
+ASEMD_1_thermostat:
+    friction: 0.01
+    temperature: 300
+    time_step: 0.5
 ASEMD_thermostat:
     friction: 0.01
     temperature: 300
     time_step: 0.5
+ConfigurationSelection:
+    n_configurations: 50
+    seed: 1234
+ConfigurationSelection_1:
+    n_configurations: 50
+    seed: 1234
+ConfigurationSelection_2:
+    n_configurations: 50
+    seed: 1234
+MLModel:
+    config_kwargs: null
+    use_energy: true
+    use_forces: true
+    use_stresses: false
 Packmol:
     box: null
     count:

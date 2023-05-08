@@ -11,85 +11,18 @@ ASEGeoOpt:
 ASEMD:
     data_id: -1
     dump_rate: 1
-    friction: 0.01
-    max_temperature: 10000.0
+    init_temperature: null
+    init_velocity: null
     repeat:
     - 1
     - 1
     - 1
     sampling_rate: 1
     steps: 250
-    temperature: 300
-    time_step: 1
-ASEMD_1:
-    data_id: -1
-    dump_rate: 1
+ASEMD_thermostat:
     friction: 0.01
-    max_temperature: 10000.0
-    repeat:
-    - 1
-    - 1
-    - 1
-    sampling_rate: 1
-    steps: 250
     temperature: 300
-    time_step: 1
-ASEMD_2:
-    data_id: -1
-    dump_rate: 1
-    friction: 0.01
-    max_temperature: 10000.0
-    repeat:
-    - 1
-    - 1
-    - 1
-    sampling_rate: 1
-    steps: 250
-    temperature: 300
-    time_step: 1
-ASEMD_3:
-    data_id: -1
-    dump_rate: 1
-    friction: 0.01
-    max_temperature: 10000.0
-    repeat:
-    - 1
-    - 1
-    - 1
-    sampling_rate: 1
-    steps: 250
-    temperature: 300
-    time_step: 1
-ASEMD_4:
-    data_id: -1
-    dump_rate: 1
-    friction: 0.01
-    max_temperature: 10000.0
-    repeat:
-    - 1
-    - 1
-    - 1
-    sampling_rate: 1
-    steps: 250
-    temperature: 300
-    time_step: 1
-ASEMD_5:
-    data_id: -1
-    dump_rate: 1
-    friction: 0.01
-    max_temperature: 10000.0
-    repeat:
-    - 1
-    - 1
-    - 1
-    sampling_rate: 1
-    steps: 250
-    temperature: 300
-    time_step: 1
-EnergyHistogram:
-    bins: 100
-ForcesHistogram:
-    bins: null
+    time_step: 0.5
 Packmol:
     box: null
     count:

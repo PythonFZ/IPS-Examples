@@ -1,6 +1,4 @@
-/model
-/train_atoms.extxyz
-/gap.input
-/train-data.extxyz
 /training.csv
+/train-data.extxyz
+/model
 /test-data.extxyz

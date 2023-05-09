@@ -18,7 +18,7 @@ ASEMD:
     - 1
     - 1
     sampling_rate: 1
-    steps: 250
+    steps: 5000
 ASEMD_1:
     data_id: -1
     dump_rate: 1
@@ -39,13 +39,13 @@ ASEMD_thermostat:
     temperature: 300
     time_step: 0.5
 ConfigurationSelection:
-    n_configurations: 50
+    n_configurations: 250
     seed: 1234
 ConfigurationSelection_1:
     n_configurations: 50
     seed: 1234
 ConfigurationSelection_2:
-    n_configurations: 50
+    n_configurations: 250
     seed: 1234
 MLModel:
     config_kwargs: null

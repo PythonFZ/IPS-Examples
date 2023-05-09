@@ -1,3 +1,4 @@
-/trajectory.h5
 /model
 /metrics_dict.csv
+/velocity_cache.json
+/trajectory.h5

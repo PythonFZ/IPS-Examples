@@ -8,6 +8,8 @@ plots:
     - rmse_e_per_atom
     - rmse_f
 - nodes/ASEMD_1/metrics_dict.csv: {}
+- nodes/BoxScale/energies.csv: {}
+- nodes/BoxScale_1/energies.csv: {}
 stages:
   ASEGeoOpt:
     cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt
@@ -32,12 +34,11 @@ stages:
     metrics:
     - nodes/ASEMD/steps_before_stopping.json:
         cache: false
-    - nodes/ASEMD/velocity_cache.json:
-        cache: false
     outs:
     - nodes/ASEMD/metrics_dict.csv
     - nodes/ASEMD/model
     - nodes/ASEMD/trajectory.h5
+    - nodes/ASEMD/velocity_cache.json
     params:
     - ASEMD
   ASEMD_1:
@@ -53,12 +54,11 @@ stages:
     metrics:
     - nodes/ASEMD_1/steps_before_stopping.json:
         cache: false
-    - nodes/ASEMD_1/velocity_cache.json:
-        cache: false
     outs:
     - nodes/ASEMD_1/metrics_dict.csv
     - nodes/ASEMD_1/model
     - nodes/ASEMD_1/trajectory.h5
+    - nodes/ASEMD_1/velocity_cache.json
     params:
     - ASEMD_1
   ASEMD_1_thermostat:
@@ -68,8 +68,6 @@ stages:
     - nodes/ASEMD_1_thermostat/hash
     params:
     - ASEMD_1_thermostat
-    - zntrack.json:
-      - ASEMD_1.thermostat
   ASEMD_thermostat:
     cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_thermostat
       --hash-only
@@ -77,8 +75,48 @@ stages:
     - nodes/ASEMD_thermostat/hash
     params:
     - ASEMD_thermostat
-    - zntrack.json:
-      - ASEMD.thermostat
+  BoxScale:
+    cmd: zntrack run ipsuite.analysis.model.dynamics.BoxScale --name BoxScale
+    deps:
+    - nodes/ASEGeoOpt/model_outs
+    - nodes/ASEGeoOpt/optim.traj
+    - nodes/BoxScale_mapping/hash
+    - nodes/CP2KSinglePoint/atoms.h5
+    - nodes/CP2KSinglePoint/cp2k
+    outs:
+    - nodes/BoxScale/atoms.h5
+    - nodes/BoxScale/energies.csv
+    - nodes/BoxScale/energy.png
+    - nodes/BoxScale/model
+    params:
+    - BoxScale
+  BoxScale_1:
+    cmd: zntrack run ipsuite.analysis.model.dynamics.BoxScale --name BoxScale_1
+    deps:
+    - nodes/ASEGeoOpt/model_outs
+    - nodes/ASEGeoOpt/optim.traj
+    - nodes/BoxScale_1_mapping/hash
+    - nodes/MLModel/model
+    - nodes/MLModel/test-data.extxyz
+    - nodes/MLModel/train-data.extxyz
+    - nodes/MLModel/training.csv
+    outs:
+    - nodes/BoxScale_1/atoms.h5
+    - nodes/BoxScale_1/energies.csv
+    - nodes/BoxScale_1/energy.png
+    - nodes/BoxScale_1/model
+    params:
+    - BoxScale_1
+  BoxScale_1_mapping:
+    cmd: zntrack run ipsuite.geometry.mapping.BarycenterMapping --name BoxScale_1_mapping
+      --hash-only
+    outs:
+    - nodes/BoxScale_1_mapping/hash
+  BoxScale_mapping:
+    cmd: zntrack run ipsuite.geometry.mapping.BarycenterMapping --name BoxScale_mapping
+      --hash-only
+    outs:
+    - nodes/BoxScale_mapping/hash
   CP2KSinglePoint:
     cmd: zntrack run ipsuite.calculators.cp2k.CP2KSinglePoint --name CP2KSinglePoint
     deps:

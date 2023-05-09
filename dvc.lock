@@ -709,19 +709,9 @@ stages:
   BoxScale_mapping:
     cmd: zntrack run ipsuite.geometry.mapping.BarycenterMapping --name BoxScale_mapping
       --hash-only
-    params:
-      zntrack.json:
-        BoxScale.mapping:
-          _type: zntrack.Node
-          value:
-            module: ipsuite.geometry.mapping
-            cls: BarycenterMapping
-            name: BoxScale_mapping
-            remote:
-            rev:
     outs:
     - path: nodes/BoxScale_mapping/hash
-      md5: 90639b3f7864c290e4d74b1f29beee32
+      md5: 1802746a77dca2283ae657701ea81dfd
       size: 36
   ASEMD_1:
     cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_1
@@ -1075,3 +1065,98 @@ stages:
     - path: nodes/ASEMD_1_thermostat/hash
       md5: 81017692dae00687e0cb5fb2da67b44a
       size: 36
+  BoxScale_1_mapping:
+    cmd: zntrack run ipsuite.geometry.mapping.BarycenterMapping --name BoxScale_1_mapping
+      --hash-only
+    outs:
+    - path: nodes/BoxScale_1_mapping/hash
+      md5: 03fa3f5ad6db9805f5ded1949f8582a6
+      size: 36
+  BoxScale:
+    cmd: zntrack run ipsuite.analysis.model.dynamics.BoxScale --name BoxScale
+    deps:
+    - path: nodes/ASEGeoOpt/model_outs
+      md5: 4e2a2e9d222fb73b44aea840d704a208.dir
+      size: 1460526
+      nfiles: 7
+    - path: nodes/ASEGeoOpt/optim.traj
+      md5: ec10e5aa0dfcf459ae634b8e2bf93767
+      size: 389001
+    - path: nodes/BoxScale_mapping/hash
+      md5: 1802746a77dca2283ae657701ea81dfd
+      size: 36
+    - path: nodes/CP2KSinglePoint/atoms.h5
+      md5: 94a90501fe62ab5e3afb97448d3f8a4e
+      size: 40648
+    - path: nodes/CP2KSinglePoint/cp2k
+      md5: 034703f9b09b8ba6fe528de4d2027e5a.dir
+      size: 178581
+      nfiles: 3
+    params:
+      params.yaml:
+        BoxScale:
+          data_id: -1
+          num: 100
+          start: 0.9
+          stop: 1.5
+    outs:
+    - path: nodes/BoxScale/atoms.h5
+      md5: 401d10cb16686cfc99c779cb1a7bfd93
+      size: 275680
+    - path: nodes/BoxScale/energies.csv
+      md5: 3e00115b8fb7029e7872637dd998ac3f
+      size: 3804
+    - path: nodes/BoxScale/energy.png
+      md5: 606369dfbd97ae0bfab2f89a88e7e4f3
+      size: 29741
+    - path: nodes/BoxScale/model
+      md5: b4ce4dc65313da930e70c1b938ac12af.dir
+      size: 2137408
+      nfiles: 7
+  BoxScale_1:
+    cmd: zntrack run ipsuite.analysis.model.dynamics.BoxScale --name BoxScale_1
+    deps:
+    - path: nodes/ASEGeoOpt/model_outs
+      md5: 4e2a2e9d222fb73b44aea840d704a208.dir
+      size: 1460526
+      nfiles: 7
+    - path: nodes/ASEGeoOpt/optim.traj
+      md5: ec10e5aa0dfcf459ae634b8e2bf93767
+      size: 389001
+    - path: nodes/BoxScale_1_mapping/hash
+      md5: 03fa3f5ad6db9805f5ded1949f8582a6
+      size: 36
+    - path: nodes/MLModel/model
+      md5: 486d8911fb3a4846bbfdeff6cd878022.dir
+      size: 191124559
+      nfiles: 8
+    - path: nodes/MLModel/test-data.extxyz
+      md5: b3583a031ce97c917d72585d2a21633c
+      size: 253795
+    - path: nodes/MLModel/train-data.extxyz
+      md5: 195ae2985be01f32ebd0d94379b3f94f
+      size: 253763
+    - path: nodes/MLModel/training.csv
+      md5: 7b4723f383ad67208b0b78604334adef
+      size: 125863
+    params:
+      params.yaml:
+        BoxScale_1:
+          data_id: -1
+          num: 100
+          start: 0.9
+          stop: 1.5
+    outs:
+    - path: nodes/BoxScale_1/atoms.h5
+      md5: 3dfad4ef6d3a5cb5c091731cb6588598
+      size: 275680
+    - path: nodes/BoxScale_1/energies.csv
+      md5: 483d67e5bb84f900a7c2878a5260ee91
+      size: 4004
+    - path: nodes/BoxScale_1/energy.png
+      md5: d20c063a24a5262ee4bd238d1cc20b5a
+      size: 24960
+    - path: nodes/BoxScale_1/model
+      md5: 64586897446153f477c052dd0e2579ad.dir
+      size: 11
+      nfiles: 1

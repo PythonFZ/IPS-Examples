@@ -38,6 +38,16 @@ ASEMD_thermostat:
     friction: 0.01
     temperature: 300
     time_step: 0.5
+BoxScale:
+    data_id: -1
+    num: 100
+    start: 0.9
+    stop: 1.5
+BoxScale_1:
+    data_id: -1
+    num: 100
+    start: 0.9
+    stop: 1.5
 ConfigurationSelection:
     n_configurations: 50
     seed: 1234

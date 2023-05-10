@@ -1,5 +1,27 @@
 schema: '2.0'
 stages:
+  ASEMD_thermostat:
+    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_thermostat
+      --hash-only
+    params:
+      params.yaml:
+        ASEMD_thermostat:
+          friction: 0.01
+          temperature: 300
+          time_step: 0.5
+      zntrack.json:
+        ASEMD.thermostat:
+          _type: zntrack.Node
+          value:
+            module: ipsuite.calculators.ase_md
+            cls: LagevinThermostat
+            name: ASEMD_thermostat
+            remote:
+            rev:
+    outs:
+    - path: nodes/ASEMD_thermostat/hash
+      md5: 7777dee660f2019b0460479377f60a67
+      size: 36
   SmilesToAtoms:
     cmd: zntrack run ipsuite.configuration_generation.smiles_to_atoms.SmilesToAtoms
       --name SmilesToAtoms
@@ -17,6 +39,31 @@ stages:
     - path: nodes/SmilesToAtoms/molecule.png
       md5: 68c5abd6a9aa9afec2350871948be67a
       size: 2795
+  Packmol:
+    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
+    deps:
+    - path: nodes/SmilesToAtoms/atoms.h5
+      md5: 18e1daf34a7a2c928ab218e8c24b835b
+      size: 27968
+    - path: nodes/SmilesToAtoms/molecule.png
+      md5: 68c5abd6a9aa9afec2350871948be67a
+      size: 2795
+    params:
+      params.yaml:
+        Packmol:
+          box:
+          count:
+          - 10
+          density: 997
+          tolerance: 2.0
+    outs:
+    - path: nodes/Packmol/atoms.h5
+      md5: 963c575495ab9f1e1853d9704baf3543
+      size: 27968
+    - path: nodes/Packmol/packmol
+      md5: 222a03a391988ec4235c4a3f68554653.dir
+      size: 2192
+      nfiles: 3
   CP2KSinglePoint:
     cmd: zntrack run ipsuite.calculators.cp2k.CP2KSinglePoint --name CP2KSinglePoint
     deps:
@@ -101,23 +148,6 @@ stages:
       md5: 034703f9b09b8ba6fe528de4d2027e5a.dir
       size: 178581
       nfiles: 3
-  xTBSinglePoint:
-    cmd: zntrack run ipsuite.calculators.xtb.xTBSinglePoint --name xTBSinglePoint
-    deps:
-    - path: nodes/SmilesToAtoms/atoms.h5
-      md5: 268d1ec88be9e69eeaffa819c32d29ed
-      size: 27968
-    - path: nodes/SmilesToAtoms/molecule.png
-      md5: 6b3e38debf634320d4828d98761f30d3
-      size: 2512
-    params:
-      params.yaml:
-        xTBSinglePoint:
-          method: GFN1-xTB
-    outs:
-    - path: nodes/xTBSinglePoint/atoms.h5
-      md5: 6950ed042d2c496cfb6eae1fceb92dd3
-      size: 50096
   ASEGeoOpt:
     cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt
     deps:
@@ -155,60 +185,28 @@ stages:
     - path: nodes/ASEGeoOpt/optim.traj
       md5: ec10e5aa0dfcf459ae634b8e2bf93767
       size: 389001
-  ASEGeoOpt_1:
-    cmd: zntrack run ipsuite.calculators.ase_geoopt.ASEGeoOpt --name ASEGeoOpt_1
-    deps:
-    - path: nodes/ASEGeoOpt/optim.traj
-      md5: cb8007f3a4e276164f512f1f95ee19b4
-      size: 19222
-    - path: nodes/CP2KSinglePoint/atoms.h5
-      md5: 862d6922e9e4f697a01d5f332d4ebacc
-      size: 40648
-    - path: nodes/CP2KSinglePoint/cp2k
-      md5: abe529a9774ca81915401ab37f4a7cb9.dir
-      size: 190089
-      nfiles: 6
+  ASEMD_1_thermostat:
+    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_1_thermostat
+      --hash-only
     params:
       params.yaml:
-        ASEGeoOpt_1:
-          data_id: -1
-          init_kwargs: {}
-          optimizer: FIRE
-          repeat:
-          - 1
-          - 1
-          - 1
-          run_kwargs:
-            fmax: 1.0
+        ASEMD_1_thermostat:
+          friction: 0.01
+          temperature: 300
+          time_step: 0.5
+      zntrack.json:
+        ASEMD_1.thermostat:
+          _type: zntrack.Node
+          value:
+            module: ipsuite.calculators.ase_md
+            cls: LagevinThermostat
+            name: ASEMD_1_thermostat
+            remote:
+            rev:
     outs:
-    - path: nodes/ASEGeoOpt_1/optim.traj
-      md5: 3fc3ce8e6475a2fdf53e0b82d1e1c6a6
-      size: 17767
-  Packmol:
-    cmd: zntrack run ipsuite.configuration_generation.packmol.Packmol --name Packmol
-    deps:
-    - path: nodes/SmilesToAtoms/atoms.h5
-      md5: 18e1daf34a7a2c928ab218e8c24b835b
-      size: 27968
-    - path: nodes/SmilesToAtoms/molecule.png
-      md5: 68c5abd6a9aa9afec2350871948be67a
-      size: 2795
-    params:
-      params.yaml:
-        Packmol:
-          box:
-          count:
-          - 10
-          density: 997
-          tolerance: 2.0
-    outs:
-    - path: nodes/Packmol/atoms.h5
-      md5: 963c575495ab9f1e1853d9704baf3543
-      size: 27968
-    - path: nodes/Packmol/packmol
-      md5: 222a03a391988ec4235c4a3f68554653.dir
-      size: 2192
-      nfiles: 3
+    - path: nodes/ASEMD_1_thermostat/hash
+      md5: 6c8ce374c7eff47101d93da147b8a8b2
+      size: 36
   ASEMD:
     cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD
     deps:
@@ -259,264 +257,6 @@ stages:
     - path: nodes/ASEMD/velocity_cache.json
       md5: 8ed7a61b8111212bf49c4bd987b84259
       size: 1182
-  CP2KSinglePoint_1:
-    cmd: zntrack run ipsuite.calculators.cp2k.CP2KSinglePoint --name CP2KSinglePoint_1
-    deps:
-    - path: nodes/Packmol
-      md5: 60abb4e50879a1b85840c240271076a4.dir
-      size: 2192
-      nfiles: 3
-    params:
-      cp2k.yaml:
-        force_eval:
-          method: quickstep
-          DFT:
-            mgrid:
-              cutoff: 1801.0
-              rel_cutoff: 120.0
-              ngrids: 5
-            QS:
-              eps_filter_matrix: 0.0
-              eps_pgf_orb: 0.0001
-            SCF:
-              scf_guess: restart
-              max_scf: 100
-              eps_scf: 1e-06
-              OT:
-                minimizer: diis
-                preconditioner: full_single_inverse
-              outer_scf:
-                max_scf: 100
-                eps_scf: 1e-06
-              print:
-                restart:
-                  each:
-                    QS_SCF: 0
-            XC:
-              xc_functional:
-                becke97:
-                  scale_c: 1.0
-                  scale_x: 1.0
-              vdw_potential:
-                pair_potential:
-                  type: DFTD3
-                  parameter_file_name: dftd3.dat
-                  reference_functional: PBE
-                  r_cutoff: 16
-                potential_type: pair_potential
-            print:
-              moments:
-                _: ON
-              hirshfeld:
-                _: ON
-            charge: 0
-            basis_set_file_name: GTH_BASIS_SETS
-            potential_file_name: GTH_POTENTIALS
-          subsys:
-            kind:
-              O:
-                basis_set: TZVP-GTH-q6
-                potential: GTH-PBE-q6
-              C:
-                basis_set: TZVP-GTH-q4
-                potential: GTH-PBE-q4
-              H:
-                basis_set: TZVP-GTH-q1
-                potential: GTH-PBE-q1
-    outs:
-    - path: nodes/CP2KSinglePoint_1/atoms.h5
-      md5: 4315eef3a97f52490ab5fe6eda04e215
-      size: 40648
-    - path: nodes/CP2KSinglePoint_1/cp2k
-      md5: 6bcf9ca3dcb2d1340cc804c2765658d8.dir
-      size: 166292
-      nfiles: 3
-  EnergyHistogram:
-    cmd: zntrack run ipsuite.analysis.bin_property.EnergyHistogram --name EnergyHistogram
-    deps:
-    - path: nodes/ASEMD/calc_logs
-      md5: 12447d235b6f9588363b7675f7943d61.dir
-      size: 3072748
-      nfiles: 6
-    - path: nodes/ASEMD/flux_data.csv
-      md5: 6e60245cc47404e5d19ab1c599d9ecc1
-      size: 10491
-    - path: nodes/ASEMD/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD/trajectory.h5
-      md5: aba2e333ca4072528a46ce630013dfbd
-      size: 587920
-    - path: nodes/ASEMD_1/calc_logs
-      md5: 71723dd284427b2ba46892ca5b6c71c3.dir
-      size: 3075019
-      nfiles: 6
-    - path: nodes/ASEMD_1/flux_data.csv
-      md5: 8652be29daf1d9835811c26c4daed2ee
-      size: 10454
-    - path: nodes/ASEMD_1/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_1/trajectory.h5
-      md5: 20acce22e02a64ecde68046cb5ca9bd5
-      size: 587920
-    - path: nodes/ASEMD_2/calc_logs
-      md5: 15c9a739797ea4a238b7bddf6a50d5a7.dir
-      size: 3076962
-      nfiles: 6
-    - path: nodes/ASEMD_2/flux_data.csv
-      md5: 96674d5354c302096277c8029751bdb4
-      size: 10461
-    - path: nodes/ASEMD_2/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_2/trajectory.h5
-      md5: a3e4634173007f0547c4a15ca95b9392
-      size: 587920
-    - path: nodes/ASEMD_3/calc_logs
-      md5: 7cb5d72120cdc9da56f02cee74edb76e.dir
-      size: 3077448
-      nfiles: 6
-    - path: nodes/ASEMD_3/flux_data.csv
-      md5: ba247a970e695df5ea24ad4a6a49af03
-      size: 10447
-    - path: nodes/ASEMD_3/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_3/trajectory.h5
-      md5: 3e2914ee867c1e36b21d21c9ec515d7c
-      size: 587920
-    - path: nodes/ASEMD_4/calc_logs
-      md5: 4e541e469c93aa62d0d2dbf3f3dc9ff8.dir
-      size: 3075990
-      nfiles: 6
-    - path: nodes/ASEMD_4/flux_data.csv
-      md5: eacd6894529c647a9a2792326cb318f7
-      size: 10437
-    - path: nodes/ASEMD_4/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_4/trajectory.h5
-      md5: 9b7d489e07cb8b5ac1031a519e2c9822
-      size: 587920
-    - path: nodes/ASEMD_5/calc_logs
-      md5: 9a4586972736014cd85d21287e71fa37.dir
-      size: 3075747
-      nfiles: 6
-    - path: nodes/ASEMD_5/flux_data.csv
-      md5: bba31c9280fb1dc5649cf5ca5488ea65
-      size: 10421
-    - path: nodes/ASEMD_5/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_5/trajectory.h5
-      md5: e208bf93dd0e2ba64184b1ce97be6f2b
-      size: 587920
-    params:
-      params.yaml:
-        EnergyHistogram:
-          bins: 100
-    outs:
-    - path: nodes/EnergyHistogram/labels_df.csv
-      md5: bb2b1fa974fdf4b4e832c41d04d61531
-      size: 2463
-    - path: nodes/EnergyHistogram/plots
-      md5: b9ae3485502a98374ba87579ed25e065.dir
-      size: 15763
-      nfiles: 1
-  ForcesHistogram:
-    cmd: zntrack run ipsuite.analysis.bin_property.ForcesHistogram --name ForcesHistogram
-    deps:
-    - path: nodes/ASEMD/calc_logs
-      md5: 12447d235b6f9588363b7675f7943d61.dir
-      size: 3072748
-      nfiles: 6
-    - path: nodes/ASEMD/flux_data.csv
-      md5: 6e60245cc47404e5d19ab1c599d9ecc1
-      size: 10491
-    - path: nodes/ASEMD/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD/trajectory.h5
-      md5: aba2e333ca4072528a46ce630013dfbd
-      size: 587920
-    - path: nodes/ASEMD_1/calc_logs
-      md5: 71723dd284427b2ba46892ca5b6c71c3.dir
-      size: 3075019
-      nfiles: 6
-    - path: nodes/ASEMD_1/flux_data.csv
-      md5: 8652be29daf1d9835811c26c4daed2ee
-      size: 10454
-    - path: nodes/ASEMD_1/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_1/trajectory.h5
-      md5: 20acce22e02a64ecde68046cb5ca9bd5
-      size: 587920
-    - path: nodes/ASEMD_2/calc_logs
-      md5: 15c9a739797ea4a238b7bddf6a50d5a7.dir
-      size: 3076962
-      nfiles: 6
-    - path: nodes/ASEMD_2/flux_data.csv
-      md5: 96674d5354c302096277c8029751bdb4
-      size: 10461
-    - path: nodes/ASEMD_2/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_2/trajectory.h5
-      md5: a3e4634173007f0547c4a15ca95b9392
-      size: 587920
-    - path: nodes/ASEMD_3/calc_logs
-      md5: 7cb5d72120cdc9da56f02cee74edb76e.dir
-      size: 3077448
-      nfiles: 6
-    - path: nodes/ASEMD_3/flux_data.csv
-      md5: ba247a970e695df5ea24ad4a6a49af03
-      size: 10447
-    - path: nodes/ASEMD_3/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_3/trajectory.h5
-      md5: 3e2914ee867c1e36b21d21c9ec515d7c
-      size: 587920
-    - path: nodes/ASEMD_4/calc_logs
-      md5: 4e541e469c93aa62d0d2dbf3f3dc9ff8.dir
-      size: 3075990
-      nfiles: 6
-    - path: nodes/ASEMD_4/flux_data.csv
-      md5: eacd6894529c647a9a2792326cb318f7
-      size: 10437
-    - path: nodes/ASEMD_4/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_4/trajectory.h5
-      md5: 9b7d489e07cb8b5ac1031a519e2c9822
-      size: 587920
-    - path: nodes/ASEMD_5/calc_logs
-      md5: 9a4586972736014cd85d21287e71fa37.dir
-      size: 3075747
-      nfiles: 6
-    - path: nodes/ASEMD_5/flux_data.csv
-      md5: bba31c9280fb1dc5649cf5ca5488ea65
-      size: 10421
-    - path: nodes/ASEMD_5/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_5/trajectory.h5
-      md5: e208bf93dd0e2ba64184b1ce97be6f2b
-      size: 587920
-    params:
-      params.yaml:
-        ForcesHistogram:
-          bins:
-    outs:
-    - path: nodes/ForcesHistogram/labels_df.csv
-      md5: 8034250c1fc4d26814d377b9be4fd119
-      size: 11373
-    - path: nodes/ForcesHistogram/plots
-      md5: 17d005e122136f5bc86a3aa57bfaf19e.dir
-      size: 16679
-      nfiles: 1
   ConfigurationSelection:
     cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
       ConfigurationSelection
@@ -587,6 +327,50 @@ stages:
     - path: nodes/ConfigurationSelection_1/selected_configurations.json
       md5: d5edf7f11bffef24a0a64c9925f050d6
       size: 713
+  ConfigurationSelection_2:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      ConfigurationSelection_2
+    deps:
+    - path: nodes/ASEMD/metrics_dict.csv
+      md5: a9eb68ff12ace80368bd0d061c48a3db
+      size: 122348
+    - path: nodes/ASEMD/model
+      md5: 51736a35d7985975af46ff96b0b76bf1.dir
+      size: 52259925
+      nfiles: 7
+    - path: nodes/ASEMD/steps_before_stopping.json
+      md5: 6bb61e3b7bce0931da574d19d1d82c88
+      size: 2
+    - path: nodes/ASEMD/trajectory.h5
+      md5: a9fc4bcdb25663e92473535dbebe9600
+      size: 14837984
+    - path: nodes/ASEMD/velocity_cache.json
+      md5: 8ed7a61b8111212bf49c4bd987b84259
+      size: 1182
+    - path: nodes/ConfigurationSelection/_hash.json
+      md5: 27d11527dddd6e9e6a07039c3851dc63
+      size: 38
+    - path: nodes/ConfigurationSelection/selected_configurations.json
+      md5: 4f90751495e11bcfd7d56ba4201619c8
+      size: 3474
+    - path: nodes/ConfigurationSelection_1/_hash.json
+      md5: bbfe5c0ac8fffa1de8c1e14100e41158
+      size: 38
+    - path: nodes/ConfigurationSelection_1/selected_configurations.json
+      md5: d5edf7f11bffef24a0a64c9925f050d6
+      size: 713
+    params:
+      params.yaml:
+        ConfigurationSelection_2:
+          n_configurations: 250
+          seed: 1234
+    outs:
+    - path: nodes/ConfigurationSelection_2/_hash.json
+      md5: f2fecab57415427d7ca32d2b5d15a511
+      size: 38
+    - path: nodes/ConfigurationSelection_2/selected_configurations.json
+      md5: b5c80a5c8d34fd2401f1031d1e3b2d0e
+      size: 3470
   MLModel:
     cmd: zntrack run ipsuite.models.mace_model.MACE --name MLModel
     deps:
@@ -626,103 +410,6 @@ stages:
     - path: nodes/MLModel/training.csv
       md5: da10c9f50e82a926afa787ea7a332f05
       size: 86649
-  Prediction:
-    cmd: zntrack run ipsuite.analysis.model.predict.Prediction --name Prediction
-    deps:
-    - path: nodes/ConfigurationSelection_1/_hash.json
-      md5: bbfe5c0ac8fffa1de8c1e14100e41158
-      size: 38
-    - path: nodes/ConfigurationSelection_1/selected_configurations.json
-      md5: d5edf7f11bffef24a0a64c9925f050d6
-      size: 713
-    - path: nodes/MLModel/model
-      md5: 72a64ce57cd2614d1953d981a41c3826.dir
-      size: 192268651
-      nfiles: 8
-    - path: nodes/MLModel/test-data.extxyz
-      md5: 2117b7640ff68aa06ebc085253ccecf1
-      size: 253876
-    - path: nodes/MLModel/train-data.extxyz
-      md5: e912cdd97f9c626e460e054a9886734f
-      size: 1269310
-    - path: nodes/MLModel/training.csv
-      md5: da10c9f50e82a926afa787ea7a332f05
-      size: 86649
-    outs:
-    - path: nodes/Prediction/atoms.h5
-      md5: b4553e1d1a419a641b28d1c8677dbae8
-      size: 176616
-  ForceDecomposition:
-    cmd: zntrack run ipsuite.analysis.model.predict.ForceDecomposition --name ForceDecomposition
-    deps:
-    - path: nodes/Prediction/atoms.h5
-      md5: 3d7e832653d7f8c2f680360216c58ee1
-      size: 264368
-    outs:
-    - path: nodes/ForceDecomposition/rot_force.png
-      md5: 721c69ea85aacc80e49632f932c36da3
-      size: 239201
-    - path: nodes/ForceDecomposition/rot_forces.json
-      md5: 7631e19160633eb46ee691f7e943a188
-      size: 167
-    - path: nodes/ForceDecomposition/trans_force.png
-      md5: e6314ff3be296de9ea9a458aeb508e5e
-      size: 180794
-    - path: nodes/ForceDecomposition/trans_forces.json
-      md5: 63f8e65418024d698f6e6346fd8be5db
-      size: 164
-    - path: nodes/ForceDecomposition/vib_force.png
-      md5: 721379511e57d8f9797a846da2607f20
-      size: 169752
-    - path: nodes/ForceDecomposition/vib_forces.json
-      md5: 202892abc295f87d3508c4e82060691f
-      size: 165
-  PredictionMetrics:
-    cmd: zntrack run ipsuite.analysis.model.predict.PredictionMetrics --name PredictionMetrics
-    deps:
-    - path: nodes/Prediction/atoms.h5
-      md5: b4553e1d1a419a641b28d1c8677dbae8
-      size: 176616
-    outs:
-    - path: nodes/PredictionMetrics/energy.json
-      md5: 116abae84b68535794884400c364e874
-      size: 167
-    - path: nodes/PredictionMetrics/energy_df.csv
-      md5: 88ec485bb204996cd3867d6a0c7037aa
-      size: 1948
-    - path: nodes/PredictionMetrics/forces.json
-      md5: 08b1029789918da9170245391e621178
-      size: 170
-    - path: nodes/PredictionMetrics/forces_df.csv
-      md5: 6254174554e21dbbb3ade4a8a8cc633d
-      size: 231605
-    - path: nodes/PredictionMetrics/plots
-      md5: e8ad518491c486ecae161c4f27a47525.dir
-      size: 176732
-      nfiles: 3
-    - path: nodes/PredictionMetrics/stress.json
-      md5: 3dacc4904bf5d96247706e2dacab564d
-      size: 170
-    - path: nodes/PredictionMetrics/stress_df.csv
-      md5: f36cdcff9565e6ddfefbfcdf17330fcb
-      size: 13561
-  BoxScale_mapping:
-    cmd: zntrack run ipsuite.geometry.mapping.BarycenterMapping --name BoxScale_mapping
-      --hash-only
-    params:
-      zntrack.json:
-        BoxScale.mapping:
-          _type: zntrack.Node
-          value:
-            module: ipsuite.geometry.mapping
-            cls: BarycenterMapping
-            name: BoxScale_mapping
-            remote:
-            rev:
-    outs:
-    - path: nodes/BoxScale_mapping/hash
-      md5: 90639b3f7864c290e4d74b1f29beee32
-      size: 36
   ASEMD_1:
     cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_1
     deps:
@@ -779,299 +466,58 @@ stages:
     - path: nodes/ASEMD_1/velocity_cache.json
       md5: 774f892c245f85693b9041f909cd2976
       size: 1182
-  ASEMD_2:
-    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_2
+  Prediction:
+    cmd: zntrack run ipsuite.analysis.model.predict.Prediction --name Prediction
     deps:
-    - path: nodes/ASEMD_1/calc_logs
-      md5: 71723dd284427b2ba46892ca5b6c71c3.dir
-      size: 3075019
-      nfiles: 6
-    - path: nodes/ASEMD_1/flux_data.csv
-      md5: 8652be29daf1d9835811c26c4daed2ee
-      size: 10454
-    - path: nodes/ASEMD_1/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_1/trajectory.h5
-      md5: 20acce22e02a64ecde68046cb5ca9bd5
-      size: 587920
-    - path: nodes/CP2KSinglePoint/atoms.h5
-      md5: 94a90501fe62ab5e3afb97448d3f8a4e
-      size: 40648
-    - path: nodes/CP2KSinglePoint/cp2k
-      md5: 034703f9b09b8ba6fe528de4d2027e5a.dir
-      size: 178581
-      nfiles: 3
-    params:
-      params.yaml:
-        ASEMD_2:
-          data_id: -1
-          dump_rate: 1
-          friction: 0.01
-          max_temperature: 10000.0
-          repeat:
-          - 1
-          - 1
-          - 1
-          sampling_rate: 1
-          steps: 250
-          temperature: 300
-          time_step: 1
-    outs:
-    - path: nodes/ASEMD_2/calc_logs
-      md5: 15c9a739797ea4a238b7bddf6a50d5a7.dir
-      size: 3076962
-      nfiles: 6
-    - path: nodes/ASEMD_2/flux_data.csv
-      md5: 96674d5354c302096277c8029751bdb4
-      size: 10461
-    - path: nodes/ASEMD_2/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_2/trajectory.h5
-      md5: a3e4634173007f0547c4a15ca95b9392
-      size: 587920
-  ASEMD_3:
-    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_3
-    deps:
-    - path: nodes/ASEMD_2/calc_logs
-      md5: 15c9a739797ea4a238b7bddf6a50d5a7.dir
-      size: 3076962
-      nfiles: 6
-    - path: nodes/ASEMD_2/flux_data.csv
-      md5: 96674d5354c302096277c8029751bdb4
-      size: 10461
-    - path: nodes/ASEMD_2/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_2/trajectory.h5
-      md5: a3e4634173007f0547c4a15ca95b9392
-      size: 587920
-    - path: nodes/CP2KSinglePoint/atoms.h5
-      md5: 94a90501fe62ab5e3afb97448d3f8a4e
-      size: 40648
-    - path: nodes/CP2KSinglePoint/cp2k
-      md5: 034703f9b09b8ba6fe528de4d2027e5a.dir
-      size: 178581
-      nfiles: 3
-    params:
-      params.yaml:
-        ASEMD_3:
-          data_id: -1
-          dump_rate: 1
-          friction: 0.01
-          max_temperature: 10000.0
-          repeat:
-          - 1
-          - 1
-          - 1
-          sampling_rate: 1
-          steps: 250
-          temperature: 300
-          time_step: 1
-    outs:
-    - path: nodes/ASEMD_3/calc_logs
-      md5: 7cb5d72120cdc9da56f02cee74edb76e.dir
-      size: 3077448
-      nfiles: 6
-    - path: nodes/ASEMD_3/flux_data.csv
-      md5: ba247a970e695df5ea24ad4a6a49af03
-      size: 10447
-    - path: nodes/ASEMD_3/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_3/trajectory.h5
-      md5: 3e2914ee867c1e36b21d21c9ec515d7c
-      size: 587920
-  ASEMD_4:
-    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_4
-    deps:
-    - path: nodes/ASEMD_3/calc_logs
-      md5: 7cb5d72120cdc9da56f02cee74edb76e.dir
-      size: 3077448
-      nfiles: 6
-    - path: nodes/ASEMD_3/flux_data.csv
-      md5: ba247a970e695df5ea24ad4a6a49af03
-      size: 10447
-    - path: nodes/ASEMD_3/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_3/trajectory.h5
-      md5: 3e2914ee867c1e36b21d21c9ec515d7c
-      size: 587920
-    - path: nodes/CP2KSinglePoint/atoms.h5
-      md5: 94a90501fe62ab5e3afb97448d3f8a4e
-      size: 40648
-    - path: nodes/CP2KSinglePoint/cp2k
-      md5: 034703f9b09b8ba6fe528de4d2027e5a.dir
-      size: 178581
-      nfiles: 3
-    params:
-      params.yaml:
-        ASEMD_4:
-          data_id: -1
-          dump_rate: 1
-          friction: 0.01
-          max_temperature: 10000.0
-          repeat:
-          - 1
-          - 1
-          - 1
-          sampling_rate: 1
-          steps: 250
-          temperature: 300
-          time_step: 1
-    outs:
-    - path: nodes/ASEMD_4/calc_logs
-      md5: 4e541e469c93aa62d0d2dbf3f3dc9ff8.dir
-      size: 3075990
-      nfiles: 6
-    - path: nodes/ASEMD_4/flux_data.csv
-      md5: eacd6894529c647a9a2792326cb318f7
-      size: 10437
-    - path: nodes/ASEMD_4/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_4/trajectory.h5
-      md5: 9b7d489e07cb8b5ac1031a519e2c9822
-      size: 587920
-  ASEMD_5:
-    cmd: zntrack run ipsuite.calculators.ase_md.ASEMD --name ASEMD_5
-    deps:
-    - path: nodes/ASEMD_4/calc_logs
-      md5: 4e541e469c93aa62d0d2dbf3f3dc9ff8.dir
-      size: 3075990
-      nfiles: 6
-    - path: nodes/ASEMD_4/flux_data.csv
-      md5: eacd6894529c647a9a2792326cb318f7
-      size: 10437
-    - path: nodes/ASEMD_4/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_4/trajectory.h5
-      md5: 9b7d489e07cb8b5ac1031a519e2c9822
-      size: 587920
-    - path: nodes/CP2KSinglePoint/atoms.h5
-      md5: 94a90501fe62ab5e3afb97448d3f8a4e
-      size: 40648
-    - path: nodes/CP2KSinglePoint/cp2k
-      md5: 034703f9b09b8ba6fe528de4d2027e5a.dir
-      size: 178581
-      nfiles: 3
-    params:
-      params.yaml:
-        ASEMD_5:
-          data_id: -1
-          dump_rate: 1
-          friction: 0.01
-          max_temperature: 10000.0
-          repeat:
-          - 1
-          - 1
-          - 1
-          sampling_rate: 1
-          steps: 250
-          temperature: 300
-          time_step: 1
-    outs:
-    - path: nodes/ASEMD_5/calc_logs
-      md5: 9a4586972736014cd85d21287e71fa37.dir
-      size: 3075747
-      nfiles: 6
-    - path: nodes/ASEMD_5/flux_data.csv
-      md5: bba31c9280fb1dc5649cf5ca5488ea65
-      size: 10421
-    - path: nodes/ASEMD_5/steps_before_explosion.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD_5/trajectory.h5
-      md5: e208bf93dd0e2ba64184b1ce97be6f2b
-      size: 587920
-  ASEMD_thermostat:
-    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_thermostat
-      --hash-only
-    params:
-      params.yaml:
-        ASEMD_thermostat:
-          friction: 0.01
-          temperature: 300
-          time_step: 0.5
-      zntrack.json:
-        ASEMD.thermostat:
-          _type: zntrack.Node
-          value:
-            module: ipsuite.calculators.ase_md
-            cls: LagevinThermostat
-            name: ASEMD_thermostat
-            remote:
-            rev:
-    outs:
-    - path: nodes/ASEMD_thermostat/hash
-      md5: 7777dee660f2019b0460479377f60a67
-      size: 36
-  ConfigurationSelection_2:
-    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
-      ConfigurationSelection_2
-    deps:
-    - path: nodes/ASEMD/metrics_dict.csv
-      md5: a9eb68ff12ace80368bd0d061c48a3db
-      size: 122348
-    - path: nodes/ASEMD/model
-      md5: 51736a35d7985975af46ff96b0b76bf1.dir
-      size: 52259925
-      nfiles: 7
-    - path: nodes/ASEMD/steps_before_stopping.json
-      md5: 6bb61e3b7bce0931da574d19d1d82c88
-      size: 2
-    - path: nodes/ASEMD/trajectory.h5
-      md5: a9fc4bcdb25663e92473535dbebe9600
-      size: 14837984
-    - path: nodes/ASEMD/velocity_cache.json
-      md5: 8ed7a61b8111212bf49c4bd987b84259
-      size: 1182
-    - path: nodes/ConfigurationSelection/_hash.json
-      md5: 27d11527dddd6e9e6a07039c3851dc63
-      size: 38
-    - path: nodes/ConfigurationSelection/selected_configurations.json
-      md5: 4f90751495e11bcfd7d56ba4201619c8
-      size: 3474
     - path: nodes/ConfigurationSelection_1/_hash.json
       md5: bbfe5c0ac8fffa1de8c1e14100e41158
       size: 38
     - path: nodes/ConfigurationSelection_1/selected_configurations.json
       md5: d5edf7f11bffef24a0a64c9925f050d6
       size: 713
-    params:
-      params.yaml:
-        ConfigurationSelection_2:
-          n_configurations: 250
-          seed: 1234
+    - path: nodes/MLModel/model
+      md5: 72a64ce57cd2614d1953d981a41c3826.dir
+      size: 192268651
+      nfiles: 8
+    - path: nodes/MLModel/test-data.extxyz
+      md5: 2117b7640ff68aa06ebc085253ccecf1
+      size: 253876
+    - path: nodes/MLModel/train-data.extxyz
+      md5: e912cdd97f9c626e460e054a9886734f
+      size: 1269310
+    - path: nodes/MLModel/training.csv
+      md5: da10c9f50e82a926afa787ea7a332f05
+      size: 86649
     outs:
-    - path: nodes/ConfigurationSelection_2/_hash.json
-      md5: f2fecab57415427d7ca32d2b5d15a511
-      size: 38
-    - path: nodes/ConfigurationSelection_2/selected_configurations.json
-      md5: b5c80a5c8d34fd2401f1031d1e3b2d0e
-      size: 3470
-  ASEMD_1_thermostat:
-    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_1_thermostat
-      --hash-only
-    params:
-      params.yaml:
-        ASEMD_1_thermostat:
-          friction: 0.01
-          temperature: 300
-          time_step: 0.5
-      zntrack.json:
-        ASEMD_1.thermostat:
-          _type: zntrack.Node
-          value:
-            module: ipsuite.calculators.ase_md
-            cls: LagevinThermostat
-            name: ASEMD_1_thermostat
-            remote:
-            rev:
+    - path: nodes/Prediction/atoms.h5
+      md5: b4553e1d1a419a641b28d1c8677dbae8
+      size: 176616
+  PredictionMetrics:
+    cmd: zntrack run ipsuite.analysis.model.predict.PredictionMetrics --name PredictionMetrics
+    deps:
+    - path: nodes/Prediction/atoms.h5
+      md5: b4553e1d1a419a641b28d1c8677dbae8
+      size: 176616
     outs:
-    - path: nodes/ASEMD_1_thermostat/hash
-      md5: 6c8ce374c7eff47101d93da147b8a8b2
-      size: 36
+    - path: nodes/PredictionMetrics/energy.json
+      md5: 116abae84b68535794884400c364e874
+      size: 167
+    - path: nodes/PredictionMetrics/energy_df.csv
+      md5: 88ec485bb204996cd3867d6a0c7037aa
+      size: 1948
+    - path: nodes/PredictionMetrics/forces.json
+      md5: 08b1029789918da9170245391e621178
+      size: 170
+    - path: nodes/PredictionMetrics/forces_df.csv
+      md5: 6254174554e21dbbb3ade4a8a8cc633d
+      size: 231605
+    - path: nodes/PredictionMetrics/plots
+      md5: e8ad518491c486ecae161c4f27a47525.dir
+      size: 176732
+      nfiles: 3
+    - path: nodes/PredictionMetrics/stress.json
+      md5: 3dacc4904bf5d96247706e2dacab564d
+      size: 170
+    - path: nodes/PredictionMetrics/stress_df.csv
+      md5: f36cdcff9565e6ddfefbfcdf17330fcb
+      size: 13561

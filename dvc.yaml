@@ -32,12 +32,11 @@ stages:
     metrics:
     - nodes/ASEMD/steps_before_stopping.json:
         cache: false
-    - nodes/ASEMD/velocity_cache.json:
-        cache: false
     outs:
     - nodes/ASEMD/metrics_dict.csv
     - nodes/ASEMD/model
     - nodes/ASEMD/trajectory.h5
+    - nodes/ASEMD/velocity_cache.json
     params:
     - ASEMD
   ASEMD_1:
@@ -53,32 +52,27 @@ stages:
     metrics:
     - nodes/ASEMD_1/steps_before_stopping.json:
         cache: false
-    - nodes/ASEMD_1/velocity_cache.json:
-        cache: false
     outs:
     - nodes/ASEMD_1/metrics_dict.csv
     - nodes/ASEMD_1/model
     - nodes/ASEMD_1/trajectory.h5
+    - nodes/ASEMD_1/velocity_cache.json
     params:
     - ASEMD_1
   ASEMD_1_thermostat:
-    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_1_thermostat
+    cmd: zntrack run ipsuite.calculators.ase_md.LangevinThermostat --name ASEMD_1_thermostat
       --hash-only
     outs:
     - nodes/ASEMD_1_thermostat/hash
     params:
     - ASEMD_1_thermostat
-    - zntrack.json:
-      - ASEMD_1.thermostat
   ASEMD_thermostat:
-    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_thermostat
+    cmd: zntrack run ipsuite.calculators.ase_md.LangevinThermostat --name ASEMD_thermostat
       --hash-only
     outs:
     - nodes/ASEMD_thermostat/hash
     params:
     - ASEMD_thermostat
-    - zntrack.json:
-      - ASEMD.thermostat
   CP2KSinglePoint:
     cmd: zntrack run ipsuite.calculators.cp2k.CP2KSinglePoint --name CP2KSinglePoint
     deps:
@@ -91,7 +85,7 @@ stages:
     - nodes/CP2KSinglePoint/atoms.h5
     - nodes/CP2KSinglePoint/cp2k
     params:
-    - cp2k.yaml: null
+    - cp2k.yaml:
   ConfigurationSelection:
     cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
       ConfigurationSelection

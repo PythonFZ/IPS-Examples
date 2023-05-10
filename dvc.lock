@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   ASEMD_thermostat:
-    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_thermostat
+    cmd: zntrack run ipsuite.calculators.ase_md.LangevinThermostat --name ASEMD_thermostat
       --hash-only
     params:
       params.yaml:
@@ -9,15 +9,6 @@ stages:
           friction: 0.01
           temperature: 300
           time_step: 0.5
-      zntrack.json:
-        ASEMD.thermostat:
-          _type: zntrack.Node
-          value:
-            module: ipsuite.calculators.ase_md
-            cls: LagevinThermostat
-            name: ASEMD_thermostat
-            remote:
-            rev:
     outs:
     - path: nodes/ASEMD_thermostat/hash
       md5: 7777dee660f2019b0460479377f60a67
@@ -186,7 +177,7 @@ stages:
       md5: ec10e5aa0dfcf459ae634b8e2bf93767
       size: 389001
   ASEMD_1_thermostat:
-    cmd: zntrack run ipsuite.calculators.ase_md.LagevinThermostat --name ASEMD_1_thermostat
+    cmd: zntrack run ipsuite.calculators.ase_md.LangevinThermostat --name ASEMD_1_thermostat
       --hash-only
     params:
       params.yaml:
@@ -194,15 +185,6 @@ stages:
           friction: 0.01
           temperature: 300
           time_step: 0.5
-      zntrack.json:
-        ASEMD_1.thermostat:
-          _type: zntrack.Node
-          value:
-            module: ipsuite.calculators.ase_md
-            cls: LagevinThermostat
-            name: ASEMD_1_thermostat
-            remote:
-            rev:
     outs:
     - path: nodes/ASEMD_1_thermostat/hash
       md5: 6c8ce374c7eff47101d93da147b8a8b2

@@ -157,7 +157,7 @@
             "_type": "zntrack.Node",
             "value": {
                 "module": "ipsuite.calculators.ase_md",
-                "cls": "LagevinThermostat",
+                "cls": "LangevinThermostat",
                 "name": "ASEMD_thermostat",
                 "remote": null,
                 "rev": null
@@ -310,7 +310,7 @@
                 "item": null
             }
         },
-        "device": "cuda",
+        "device": "cpu",
         "model_dir": {
             "_type": "pathlib.Path",
             "value": "$nwd$/model"
@@ -462,7 +462,7 @@
             "_type": "zntrack.Node",
             "value": {
                 "module": "ipsuite.calculators.ase_md",
-                "cls": "LagevinThermostat",
+                "cls": "LangevinThermostat",
                 "name": "ASEMD_1_thermostat",
                 "remote": null,
                 "rev": null

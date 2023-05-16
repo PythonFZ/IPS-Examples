@@ -1,1 +1,40 @@
-{}
+stages:
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - KCl1650K.extxyz
+    params:
+    - AddData
+    outs:
+    - nodes/AddData/atoms.h5
+  ConfigurationSelection:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      ConfigurationSelection
+    deps:
+    - nodes/AddData/atoms.h5
+    params:
+    - ConfigurationSelection
+    outs:
+    - nodes/ConfigurationSelection/_hash.json
+    - nodes/ConfigurationSelection/selected_configurations.json
+  ConfigurationSelection_1:
+    cmd: zntrack run ipsuite.configuration_selection.kernel.KernelSelection --name
+      ConfigurationSelection_1
+    deps:
+    - nodes/AddData/atoms.h5
+    - nodes/ConfigurationSelection_1_kernel/hash
+    params:
+    - ConfigurationSelection_1
+    outs:
+    - nodes/ConfigurationSelection_1/_hash.json
+    - nodes/ConfigurationSelection_1/kernel_results.json
+    - nodes/ConfigurationSelection_1/selected_configurations.json
+  ConfigurationSelection_1_kernel:
+    cmd: zntrack run ipsuite.configuration_comparison.MMKernel.MMKernel --name ConfigurationSelection_1_kernel
+      --hash-only
+    params:
+    - ConfigurationSelection_1_kernel
+    - zntrack.json:
+      - ConfigurationSelection_1.kernel
+    outs:
+    - nodes/ConfigurationSelection_1_kernel/hash

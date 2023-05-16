@@ -1,0 +1,92 @@
+schema: '2.0'
+stages:
+  AddData:
+    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    deps:
+    - path: KCl1650K.extxyz
+      md5: 2b9727d4c2a7f1eacab8d6a66b47118b
+      size: 219416447
+    params:
+      params.yaml:
+        AddData:
+          lines_to_read: 1000
+    outs:
+    - path: nodes/AddData/atoms.h5
+      md5: 4516f8a153325541680308724c8a946b
+      size: 5820768
+  ConfigurationSelection_1_kernel:
+    cmd: zntrack run ipsuite.configuration_comparison.MMKernel.MMKernel --name ConfigurationSelection_1_kernel
+      --hash-only
+    params:
+      params.yaml:
+        ConfigurationSelection_1_kernel:
+          soap:
+            _type: soap_parameter_dataclass
+            value:
+              l_max: 7
+              n_jobs: -1
+              n_max: 7
+              periodic: true
+              r_cut: 9.0
+              rbf: gto
+              sigma: 1.0
+              weighting:
+      zntrack.json:
+        ConfigurationSelection_1.kernel:
+          _type: zntrack.Node
+          value:
+            module: ipsuite.configuration_comparison.MMKernel
+            cls: MMKernel
+            name: ConfigurationSelection_1_kernel
+            remote:
+            rev:
+    outs:
+    - path: nodes/ConfigurationSelection_1_kernel/hash
+      md5: 942c83a4119b5f3a223b877480e7d669
+      size: 36
+  ConfigurationSelection:
+    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
+      ConfigurationSelection
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 4516f8a153325541680308724c8a946b
+      size: 5820768
+    params:
+      params.yaml:
+        ConfigurationSelection:
+          n_configurations: 10
+          seed: 1234
+    outs:
+    - path: nodes/ConfigurationSelection/_hash.json
+      md5: 0d542d947f76b55f95d42b87b4eb79de
+      size: 38
+    - path: nodes/ConfigurationSelection/selected_configurations.json
+      md5: 8aeb4488112590a9028451fa09a51ce2
+      size: 154
+  ConfigurationSelection_1:
+    cmd: zntrack run ipsuite.configuration_selection.kernel.KernelSelection --name
+      ConfigurationSelection_1
+    deps:
+    - path: nodes/AddData/atoms.h5
+      md5: 4516f8a153325541680308724c8a946b
+      size: 5820768
+    - path: nodes/ConfigurationSelection_1_kernel/hash
+      md5: 942c83a4119b5f3a223b877480e7d669
+      size: 36
+    params:
+      params.yaml:
+        ConfigurationSelection_1:
+          correlation_time: 1
+          n_configurations: 10
+          points_per_cycle: 1
+          seed: 1234
+    outs:
+    - path: nodes/ConfigurationSelection_1/_hash.json
+      md5: c5d84df3ec5a1991e3e7b9be33f9ce96
+      size: 38
+    - path: nodes/ConfigurationSelection_1/kernel_results.json
+      md5: 37c3bb5d9bf2a6ba7071c29dd3450a35
+      size: 278724
+    - path: nodes/ConfigurationSelection_1/selected_configurations.json
+      md5: ec101f7b41aa79593ae337912a9d1f06
+      size: 152

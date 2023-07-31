@@ -1,34 +1,45 @@
 stages:
   AddData:
-    cmd: zntrack run ipsuite.data_loading.add_data_ase.AddData --name AddData
+    cmd: zntrack run ipsuite.nodes.AddData --name AddData
     deps:
     - KCl1650K.extxyz
     params:
     - AddData
     outs:
     - nodes/AddData/atoms.h5
+    metrics:
+    - nodes/AddData/node-meta.json:
+        cache: false
   test_data:
-    cmd: zntrack run ipsuite.configuration_selection.uniform_energetic.UniformEnergeticSelection
-      --name test_data
+    cmd: zntrack run ipsuite.nodes.UniformEnergeticSelection --name test_data
     deps:
     - nodes/AddData/atoms.h5
+    - nodes/AddData/node-meta.json
     params:
     - test_data
     outs:
     - nodes/test_data/selected_configurations.json
+    metrics:
+    - nodes/test_data/node-meta.json:
+        cache: false
   train_data:
-    cmd: zntrack run ipsuite.configuration_selection.random.RandomSelection --name
-      train_data
+    cmd: zntrack run ipsuite.nodes.RandomSelection --name train_data
     deps:
     - nodes/AddData/atoms.h5
+    - nodes/AddData/node-meta.json
+    - nodes/test_data/node-meta.json
     - nodes/test_data/selected_configurations.json
     params:
     - train_data
     outs:
     - nodes/train_data/selected_configurations.json
+    metrics:
+    - nodes/train_data/node-meta.json:
+        cache: false
   MLModel:
-    cmd: zntrack run ipsuite.models.gap.GAP --name MLModel
+    cmd: zntrack run ipsuite.nodes.GAP --name MLModel
     deps:
+    - nodes/train_data/node-meta.json
     - nodes/train_data/selected_configurations.json
     params:
     - MLModel
@@ -36,28 +47,47 @@ stages:
     - nodes/MLModel/gap.input
     - nodes/MLModel/model
     - nodes/MLModel/train_atoms.extxyz
+    - nodes/MLModel/train_atoms.extxyz.idx
+    metrics:
+    - nodes/MLModel/node-meta.json:
+        cache: false
   Prediction:
-    cmd: zntrack run ipsuite.analysis.model.predict.Prediction --name Prediction
+    cmd: zntrack run ipsuite.nodes.Prediction --name Prediction
     deps:
     - nodes/MLModel/gap.input
     - nodes/MLModel/model
+    - nodes/MLModel/node-meta.json
     - nodes/MLModel/train_atoms.extxyz
+    - nodes/MLModel/train_atoms.extxyz.idx
+    - nodes/test_data/node-meta.json
     - nodes/test_data/selected_configurations.json
     outs:
     - nodes/Prediction/atoms.h5
+    metrics:
+    - nodes/Prediction/node-meta.json:
+        cache: false
   PredictionMetrics:
-    cmd: zntrack run ipsuite.analysis.model.predict.PredictionMetrics --name PredictionMetrics
+    cmd: zntrack run ipsuite.nodes.PredictionMetrics --name PredictionMetrics
     deps:
     - nodes/Prediction/atoms.h5
+    - nodes/Prediction/node-meta.json
     outs:
     - nodes/PredictionMetrics/energy_df.csv
     - nodes/PredictionMetrics/forces_df.csv
     - nodes/PredictionMetrics/plots
+    - nodes/PredictionMetrics/stress_deviatoric_df.csv
     - nodes/PredictionMetrics/stress_df.csv
+    - nodes/PredictionMetrics/stress_hydrostatic_df.csv
     metrics:
+    - nodes/PredictionMetrics/deviat_stress.json:
+        cache: false
     - nodes/PredictionMetrics/energy.json:
         cache: false
     - nodes/PredictionMetrics/forces.json:
+        cache: false
+    - nodes/PredictionMetrics/hydro_stress.json:
+        cache: false
+    - nodes/PredictionMetrics/node-meta.json:
         cache: false
     - nodes/PredictionMetrics/stress.json:
         cache: false

@@ -38,5 +38,5 @@ MLModel:
 test_data:
     n_configurations: 10
 train_data:
-    n_configurations: 3
+    n_configurations: 5
     seed: 1234

@@ -1,6 +1,10 @@
 {
     "AddData": {
-        "file": "KCl1650K.extxyz"
+        "file": "KCl1650K.extxyz",
+        "nwd": {
+            "_type": "pathlib.Path",
+            "value": "nodes/AddData"
+        }
     },
     "test_data": {
         "data": {
@@ -10,7 +14,7 @@
                     "instance": {
                         "_type": "zntrack.Node",
                         "value": {
-                            "module": "ipsuite.data_loading.add_data_ase",
+                            "module": "ipsuite.nodes",
                             "cls": "AddData",
                             "name": "AddData",
                             "remote": null,
@@ -23,7 +27,12 @@
             }
         },
         "data_file": null,
-        "exclude_configurations": null
+        "exclude": null,
+        "exclude_configurations": null,
+        "nwd": {
+            "_type": "pathlib.Path",
+            "value": "nodes/test_data"
+        }
     },
     "train_data": {
         "data": {
@@ -33,7 +42,7 @@
                     "instance": {
                         "_type": "zntrack.Node",
                         "value": {
-                            "module": "ipsuite.data_loading.add_data_ase",
+                            "module": "ipsuite.nodes",
                             "cls": "AddData",
                             "name": "AddData",
                             "remote": null,
@@ -46,13 +55,14 @@
             }
         },
         "data_file": null,
+        "exclude": null,
         "exclude_configurations": {
             "_type": "znflow.Connection",
             "value": {
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.configuration_selection.uniform_energetic",
+                        "module": "ipsuite.nodes",
                         "cls": "UniformEnergeticSelection",
                         "name": "test_data",
                         "remote": null,
@@ -62,16 +72,24 @@
                 "attribute": "exclude_configurations",
                 "item": null
             }
+        },
+        "nwd": {
+            "_type": "pathlib.Path",
+            "value": "nodes/train_data"
         }
     },
     "MLModel": {
+        "_train_idx_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/train_atoms.extxyz.idx"
+        },
         "data": {
             "_type": "znflow.Connection",
             "value": {
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.configuration_selection.random",
+                        "module": "ipsuite.nodes",
                         "cls": "RandomSelection",
                         "name": "train_data",
                         "remote": null,
@@ -93,6 +111,10 @@
         "train_data_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/train_atoms.extxyz"
+        },
+        "nwd": {
+            "_type": "pathlib.Path",
+            "value": "nodes/MLModel"
         }
     },
     "Prediction": {
@@ -102,7 +124,7 @@
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.configuration_selection.uniform_energetic",
+                        "module": "ipsuite.nodes",
                         "cls": "UniformEnergeticSelection",
                         "name": "test_data",
                         "remote": null,
@@ -120,7 +142,7 @@
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.models.gap",
+                        "module": "ipsuite.nodes",
                         "cls": "GAP",
                         "name": "MLModel",
                         "remote": null,
@@ -130,6 +152,10 @@
                 "attribute": null,
                 "item": null
             }
+        },
+        "nwd": {
+            "_type": "pathlib.Path",
+            "value": "nodes/Prediction"
         }
     },
     "PredictionMetrics": {
@@ -139,7 +165,7 @@
                 "instance": {
                     "_type": "zntrack.Node",
                     "value": {
-                        "module": "ipsuite.analysis.model.predict",
+                        "module": "ipsuite.nodes",
                         "cls": "Prediction",
                         "name": "Prediction",
                         "remote": null,
@@ -162,9 +188,21 @@
             "_type": "pathlib.Path",
             "value": "$nwd$/plots"
         },
+        "stress_deviatoric_df_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/stress_deviatoric_df.csv"
+        },
         "stress_df_file": {
             "_type": "pathlib.Path",
             "value": "$nwd$/stress_df.csv"
+        },
+        "stress_hydrostatic_df_file": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/stress_hydrostatic_df.csv"
+        },
+        "nwd": {
+            "_type": "pathlib.Path",
+            "value": "nodes/PredictionMetrics"
         }
     }
 }

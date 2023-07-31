@@ -2,3 +2,5 @@
 /energy_df.csv
 /plots
 /stress_df.csv
+/stress_deviatoric_df.csv
+/stress_hydrostatic_df.csv

@@ -1,4 +1,8 @@
 [core]
     remote = origin
 ['remote "origin"']
-    url = https://dagshub.com/PythonFZ/IPS-Examples.dvc
+    url = s3://public/dvc/IPS-Examples/
+    endpointurl = https://minio.icp.uni-stuttgart.de
+    access_key_id = public_eip8waishae6ies
+    secret_access_key = OoCiedah9aw9Pui8mie7phahlatie7oi
+

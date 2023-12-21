@@ -19,6 +19,7 @@ stages:
     - test_data
     outs:
     - nodes/test_data/selected_configurations.json
+    - nodes/test_data/selection.png
     metrics:
     - nodes/test_data/node-meta.json:
         cache: false
@@ -29,10 +30,12 @@ stages:
     - nodes/AddData/node-meta.json
     - nodes/test_data/node-meta.json
     - nodes/test_data/selected_configurations.json
+    - nodes/test_data/selection.png
     params:
     - train_data
     outs:
     - nodes/train_data/selected_configurations.json
+    - nodes/train_data/selection.png
     metrics:
     - nodes/train_data/node-meta.json:
         cache: false
@@ -41,6 +44,7 @@ stages:
     deps:
     - nodes/train_data/node-meta.json
     - nodes/train_data/selected_configurations.json
+    - nodes/train_data/selection.png
     params:
     - MLModel
     outs:
@@ -61,6 +65,7 @@ stages:
     - nodes/MLModel/train_atoms.extxyz.idx
     - nodes/test_data/node-meta.json
     - nodes/test_data/selected_configurations.json
+    - nodes/test_data/selection.png
     outs:
     - nodes/Prediction/atoms.h5
     metrics:

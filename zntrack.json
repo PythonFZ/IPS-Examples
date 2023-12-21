@@ -29,6 +29,10 @@
         "data_file": null,
         "exclude": null,
         "exclude_configurations": null,
+        "img_selection": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/selection.png"
+        },
         "nwd": {
             "_type": "pathlib.Path",
             "value": "nodes/test_data"
@@ -72,6 +76,10 @@
                 "attribute": "exclude_configurations",
                 "item": null
             }
+        },
+        "img_selection": {
+            "_type": "pathlib.Path",
+            "value": "$nwd$/selection.png"
         },
         "nwd": {
             "_type": "pathlib.Path",
